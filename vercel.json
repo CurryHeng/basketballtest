@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "https://basketball-api.onrender.com/api/$1"
-    }
-  ]
-}

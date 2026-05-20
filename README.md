@@ -39,14 +39,40 @@ baskertball/
 
 ---
 
-## 快速启动
+## 快速启动（前端静态页面）
 
 ```bash
-# 1. 安装依赖
-pip install -r requirements.txt
+# 方式一：直接用浏览器打开（部分功能受限）
+# 双击 index.html 即可浏览球星资料
 
-# 2. 启动后端
+# 方式二：Live Server（推荐，可完整使用搜索筛选）
+# VS Code 中右键 index.html → Open with Live Server
+```
+
+## 天赋分析（需要后端）
+
+天赋分析和排行榜功能需要 Flask 后端支持：
+
+```bash
+pip install -r requirements.txt
 python app.py
+```
+
+然后在浏览器访问 http://127.0.0.1:5000 （后端 API 地址），并在 `js/main.js` 中配置后端地址。
+
+---
+
+## GitHub Pages 部署（免费）
+
+1. 打开 GitHub 仓库 `CurryHeng/basketballtest`
+2. 进入 **Settings** → **Pages**
+3. **Source** 选 **Deploy from branch**
+4. **Branch** 选 `master`，目录选 `/ (root)`
+5. 点击 **Save**
+
+等 1-2 分钟，访问 `https://curryheng.github.io/basketballtest/` 即可看到线上页面。
+
+> 天赋分析功能需要部署 Render 后端后才能使用，详见 [部署指南](./DEPLOY.md)。
 
 # 3. 打开前端（另一个终端，用 Live Server 或直接双击 index.html）
 #    或使用 Vercel CLI: vercel dev

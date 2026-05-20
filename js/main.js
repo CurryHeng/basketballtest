@@ -4,11 +4,10 @@ let selectedTeam = '全部';
 let searchQuery = '';
 let debounceTimer = null;
 
-// Vercel 会自动把 /api/* 请求转发到 Render 后端，所以生产环境用空字符串
-// 本地开发时（Live Server），直接请求 localhost:5000
+// 本地开发用 localhost:5000（需启动 Flask），GitHub Pages 上线后改成 Render 地址
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://127.0.0.1:5000'
-  : '';
+  : 'http://127.0.0.1:5000';  // ← 部署 Render 后替换为 https://你的服务名.onrender.com
 
 const homePage = document.getElementById('home-page');
 const detailPage = document.getElementById('detail-page');
