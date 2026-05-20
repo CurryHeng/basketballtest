@@ -4,7 +4,8 @@ let selectedTeam = '全部';
 let searchQuery = '';
 let debounceTimer = null;
 
-const API_BASE = 'http://127.0.0.1:5000';
+// 生产环境前后端同域（Render），空字符串即可；本地开发用 python app.py 也会同域
+const API_BASE = '';
 
 const homePage = document.getElementById('home-page');
 const detailPage = document.getElementById('detail-page');

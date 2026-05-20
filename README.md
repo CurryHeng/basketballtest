@@ -41,40 +41,30 @@ baskertball/
 
 ## 快速启动
 
-### 1. 安装依赖
-
 ```bash
-pip install flask flask-cors
-```
-
-或使用 requirements.txt:
-```bash
+# 1. 安装依赖
 pip install -r requirements.txt
-```
 
-### 2. 启动后端服务
-
-```bash
+# 2. 启动（前后端一体）
 python app.py
 ```
 
-终端输出：
-```
-==================================================
-篮球天赋分析后端启动
-==================================================
+浏览器访问 **http://127.0.0.1:5000** 即可使用全部功能。
 
-服务器地址: http://127.0.0.1:5000
-API文档: http://127.0.0.1:5000/
-==================================================
-```
+---
 
-### 3. 启动前端
+## 一键部署 (Render)
 
-使用 VS Code Live Server：
-1. 右键 `index.html`
-2. 选择 "Open with Live Server"
-3. 浏览器访问 `http://127.0.0.1:5500`
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+1. 点击上方按钮，用 GitHub 账号登录 Render
+2. 选择仓库 `CurryHeng/basketballtest`
+3. **Start Command** 填入：`gunicorn app:app`
+4. 点击 **Create Web Service**
+
+部署完成后，你的应用就在 `https://你的服务名.onrender.com` 了。
+
+以后每次 `git push` 到 GitHub，Render 会自动重新部署。
 
 ---
 
@@ -187,37 +177,9 @@ SCORING_WEIGHTS = {
 
 ---
 
-## 前后端对接
+## 前后端对接（已同域）
 
-### 前端请求示例
-
-```javascript
-const response = await fetch('http://127.0.0.1:5000/api/analyze', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        nickname: '小飞侠',
-        height: 185,
-        weight: 78,
-        playStyle: ['投射', '突破']
-    })
-});
-
-const result = await response.json();
-console.log(result.result.matchedStar);
-```
-
-### 跨域配置
-
-已在 `app.py` 中配置：
-```python
-CORS(app, resources={
-    r"/api/*": {
-        "origins": "*",
-        "methods": ["GET", "POST", "OPTIONS"]
-    }
-})
-```
+前后端已通过 Flask 静态文件服务整合，`js/main.js` 中的 `API_BASE` 为空字符串，开发和生产环境均无需修改。
 
 ---
 
