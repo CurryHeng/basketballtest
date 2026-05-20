@@ -7,7 +7,7 @@ let debounceTimer = null;
 // 本地开发用 localhost:5000（需启动 Flask），GitHub Pages 上线后改成 Render 地址
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://127.0.0.1:5000'
-  : 'http://127.0.0.1:5000';  // ← 部署 Render 后替换为 https://你的服务名.onrender.com
+  : 'https://basketball-api.onrender.com';
 
 const homePage = document.getElementById('home-page');
 const detailPage = document.getElementById('detail-page');
