@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贡献球星图片</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/contribute.css">
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-link-btn">球星资料库</a>
+        <a href="image-search.html" class="nav-link-btn">图片搜索</a>
+        <button class="nav-btn active">贡献图片</button>
+    </nav>
+
+    <div class="contribute-container">
+        <header class="contribute-header">
+            <h1>📸 贡献球星图片</h1>
+            <p class="subtitle">帮助完善球星资料库，上传缺失的图片</p>
+        </header>
+
+        <div class="contribute-info">
+            <h3>📋 当前缺失图片的球星</h3>
+            <div id="missing-list" class="missing-list"></div>
+        </div>
+
+        <div class="upload-section">
+            <h3>⬆️ 上传图片</h3>
+            
+            <div class="upload-methods">
+                <button class="method-btn active" data-method="url">图片URL</button>
+                <button class="method-btn" data-method="upload">本地上传</button>
+            </div>
+
+            <div id="url-method" class="upload-method active">
+                <div class="form-group">
+                    <label>选择球星</label>
+                    <select id="player-select">
+                        <option value="">-- 请选择 --</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>图片类型</label>
+                    <select id="image-type">
+                        <option value="profile">头像照片</option>
+                        <option value="action">动作GIF</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>图片URL</label>
+                    <input type="text" id="image-url" placeholder="输入图片链接地址">
+                    <p class="hint">支持：jpg、png、gif 格式的图片链接</p>
+                </div>
+                
+                <div class="preview-box" id="preview-box">
+                    <img id="preview-image" src="" alt="预览">
+                    <span class="preview-placeholder">图片预览</span>
+                </div>
+                
+                <button id="submit-url" class="btn-submit">提交图片</button>
+            </div>
+
+            <div id="upload-method" class="upload-method">
+                <div class="form-group">
+                    <label>选择球星</label>
+                    <select id="player-select-upload">
+                        <option value="">-- 请选择 --</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>图片类型</label>
+                    <select id="image-type-upload">
+                        <option value="profile">头像照片</option>
+                        <option value="action">动作GIF</option>
+                    </select>
+                </div>
+                
+                <div class="file-upload-area" id="drop-zone">
+                    <input type="file" id="file-input" accept="image/*,.gif" hidden>
+                    <div class="upload-placeholder">
+                        <span class="icon">📁</span>
+                        <p>拖拽图片到这里，或点击选择文件</p>
+                        <p class="hint">支持：jpg、png、gif，最大 5MB</p>
+                    </div>
+                </div>
+                
+                <div class="file-preview" id="file-preview">
+                    <img id="file-preview-img" src="" alt="预览">
+                    <button id="remove-file" class="btn-remove">✕ 移除</button>
+                </div>
+                
+                <button id="upload-btn" class="btn-submit" disabled>上传到图床</button>
+                
+                <div class="upload-note">
+                    <p>💡 上传到免费图床：</p>
+                    <p>1. 先上传到 <a href="https://imgbb.com" target="_blank">ImgBB</a> 或 <a href="https://imgur.com" target="_blank">Imgur</a></p>
+                    <p>2. 复制图片链接</p>
+                    <p>3. 使用"图片URL"方式提交</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="submission-section">
+            <h3>📝 提交方式</h3>
+            <div class="submission-options">
+                <div class="option-card">
+                    <h4>方式一：GitHub Issue</h4>
+                    <p>点击提交后，会生成一个Issue链接，你可以在GitHub上提交图片贡献请求。</p>
+                    <button id="create-issue" class="btn-primary">创建Issue</button>
+                </div>
+                
+                <div class="option-card">
+                    <h4>方式二：复制数据</h4>
+                    <p>生成JSON数据，复制后发送给项目维护者。</p>
+                    <button id="copy-json" class="btn-secondary">复制JSON</button>
+                </div>
+                
+                <div class="option-card">
+                    <h4>方式三：Pull Request</h4>
+                    <p>Fork仓库后，添加图片并提交PR。</p>
+                    <a href="https://github.com/CurryHeng/basketball/fork" class="btn-secondary" target="_blank">Fork仓库</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3 id="modal-title">提交成功</h3>
+                <div id="modal-body"></div>
+                <button id="modal-close" class="btn-primary">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/contribute.js"></script>
+</body>
+</html>
