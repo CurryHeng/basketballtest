@@ -4,7 +4,7 @@ Flask主应用 - 篮球天赋分析后端
 极简轻量化设计，方便二次开发
 """
 
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sys
 import os
@@ -206,33 +206,15 @@ def get_templates():
         'fun': fun
     })
 
-# ─── 静态文件服务（生产环境：Render 托管前端 + 后端） ────
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-@app.route('/')
-def serve_index():
-    return send_from_directory(ROOT_DIR, 'index.html')
-
-@app.route('/<path:filename>')
-def serve_static(filename):
-    # API 路由由 Flask 自动优先匹配，不会走到这里
-    return send_from_directory(ROOT_DIR, filename)
-
-# ─── 开发时 CORS 兜底（生产环境同域，不需要） ────
-@app.after_request
-def add_cors(response):
-    response.headers.setdefault('Access-Control-Allow-Origin', '*')
-    return response
-
 if __name__ == '__main__':
     print("=" * 50)
-    print("篮球天赋分析系统启动")
+    print("篮球天赋分析后端启动")
     print("=" * 50)
 
     init_db()
 
-    print("\n本地访问: http://127.0.0.1:5000")
-    print("API文档: http://127.0.0.1:5000/api/")
+    print("\n服务器地址: http://127.0.0.1:5000")
+    print("API文档: http://127.0.0.1:5000/")
     print("\n按 Ctrl+C 停止服务器")
     print("=" * 50)
 

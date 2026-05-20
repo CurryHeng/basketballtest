@@ -45,26 +45,59 @@ baskertball/
 # 1. 安装依赖
 pip install -r requirements.txt
 
-# 2. 启动（前后端一体）
+# 2. 启动后端
 python app.py
-```
 
-浏览器访问 **http://127.0.0.1:5000** 即可使用全部功能。
+# 3. 打开前端（另一个终端，用 Live Server 或直接双击 index.html）
+#    或使用 Vercel CLI: vercel dev
+```
 
 ---
 
-## 一键部署 (Render)
+## 部署架构
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+```
+用户浏览器 → Vercel（前端静态页面）
+                ↓ 代理 /api/* 请求
+              Render（Flask 后端 API）
+```
 
-1. 点击上方按钮，用 GitHub 账号登录 Render
-2. 选择仓库 `CurryHeng/basketballtest`
-3. **Start Command** 填入：`gunicorn app:app`
-4. 点击 **Create Web Service**
+## Vercel（前端）
 
-部署完成后，你的应用就在 `https://你的服务名.onrender.com` 了。
+1. 访问 https://vercel.com 用 GitHub 登录
+2. **Add New Project** → 导入 `CurryHeng/basketballtest`
+3. 框架选 **Other**，Vercel 会自动识别静态文件
+4. 点击 **Deploy**，几秒后获得 `https://basketballtest.vercel.app`
 
-以后每次 `git push` 到 GitHub，Render 会自动重新部署。
+> 已配置 `vercel.json`，Vercel 会自动把 `/api/*` 请求转发到 Render 后端。
+
+## Render（后端）
+
+1. 访问 https://dashboard.render.com  → **New +** → **Web Service**
+2. 连接仓库 `CurryHeng/basketballtest`
+3. 配置：
+
+| 配置项 | 值 |
+|--------|-----|
+| Name | `basketball-api` |
+| Environment | `Python 3` |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `gunicorn app:app` |
+| Plan | **Free** |
+
+4. 创建完成后，把 `vercel.json` 里的 `https://basketball-api.onrender.com` 替换成你实际的 Render 地址
+
+> Render 免费版闲置 15 分钟会休眠，再次访问会延迟几秒唤醒
+
+## 以后加功能
+
+```bash
+git add .
+git commit -m "加了新功能"
+git push          # GitHub 收到推送
+                  # Vercel 自动重新部署前端
+                  # Render 自动重新部署后端
+```
 
 ---
 

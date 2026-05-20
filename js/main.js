@@ -4,8 +4,11 @@ let selectedTeam = '全部';
 let searchQuery = '';
 let debounceTimer = null;
 
-// 生产环境前后端同域（Render），空字符串即可；本地开发用 python app.py 也会同域
-const API_BASE = '';
+// Vercel 会自动把 /api/* 请求转发到 Render 后端，所以生产环境用空字符串
+// 本地开发时（Live Server），直接请求 localhost:5000
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://127.0.0.1:5000'
+  : '';
 
 const homePage = document.getElementById('home-page');
 const detailPage = document.getElementById('detail-page');

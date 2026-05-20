@@ -1,62 +1,77 @@
-# 部署指南（简化版）
+# 部署指南
 
-本项目已配置为 **前后端一体部署**，只需一个平台即可运行。
+## 架构
 
-## Render 一键部署（推荐）
+```
+用户 → Vercel（前端静态页面）
+          ↓ 代理 /api/*
+        Render（Flask 后端 API）
+```
 
-1. 访问 https://dashboard.render.com  → **New +** → **Web Service**
-2. 连接你的 GitHub 仓库 `CurryHeng/basketballtest`
+两者都免费，都连接 GitHub 自动部署。
+
+---
+
+## 1. Render — 部署后端 API
+
+1. 访问 https://dashboard.render.com → **New +** → **Web Service**
+2. 连接 GitHub 仓库 `CurryHeng/basketballtest`
 3. 按以下配置：
 
 | 配置项 | 值 |
 |--------|-----|
-| Name | `basketball-api`（或任意名称） |
+| Name | `basketball-api` |
 | Environment | `Python 3` |
 | Build Command | `pip install -r requirements.txt` |
 | Start Command | `gunicorn app:app` |
-| Plan | **Free**（够用） |
+| Plan | **Free** |
 
 4. 点击 **Create Web Service**
+5. 部署完成后，获得 URL 如 `https://basketball-api.onrender.com`
 
-部署完成后访问 `https://basketball-api.onrender.com` 即可。
+> 免费版闲置 15 分钟会休眠，再次访问会延迟几秒唤醒。
 
-> 注意：Render 免费版闲置 15 分钟会休眠，再次访问会延迟数秒唤醒。这是正常的。
+## 2. Vercel — 部署前端页面
+
+1. 返回 Render，复制你的服务 URL（如 `https://basketball-api.onrender.com`）
+2. 打开项目中的 `vercel.json`，把 `destination` 地址替换成你的 Render URL
+3. 提交并推送代码：
+
+```bash
+git add vercel.json
+git commit -m "更新 Render 后端地址"
+git push
+```
+
+4. 访问 https://vercel.com → **Add New Project**
+5. 导入 `CurryHeng/basketballtest`
+6. 框架选 **Other**，直接 **Deploy**
+7. 部署完成 → `https://basketballtest.vercel.app`
+
+## 3. 验证
+
+- 访问 Vercel 地址，页面正常显示
+- 打开天赋分析，提交表单，确认能返回结果（第一次会慢几秒，因为 Render 在唤醒）
+- 排行榜能加载数据
 
 ## 本地开发
 
 ```bash
 pip install -r requirements.txt
-python app.py
-# 访问 http://localhost:5000
+python app.py          # 后端 → http://localhost:5000
+# 前端用 Live Server 打开 index.html
 ```
 
-## 添加新功能的工作流
+`js/main.js` 已配置：本地开发时自动请求 `localhost:5000`，生产环境用空字符串（走 Vercel 代理）。
+
+## 添加新功能
 
 ```bash
-# 1. 修改代码
-# 2. 提交并推送
+# 1. 改代码
+# 2. 提交推送
 git add .
-git commit -m "添加了新功能"
+git commit -m "新功能描述"
 git push
 
-# 3. Render 自动重新部署（约 1-2 分钟）
-```
-
-## 文件清单（需上传到 GitHub）
-
-```
-baskertball/
-├── app.py                  # Flask 后端 + 前端托管
-├── Procfile                # Render 部署配置
-├── requirements.txt        # Python 依赖
-├── index.html              # 首页
-├── css/style.css           # 样式
-├── js/main.js              # 前端逻辑
-├── data/players.json       # 球星数据
-├── backend/                # 后端逻辑
-│   ├── database.py
-│   ├── talent_analyzer.py
-│   └── config/matching_rules.py
-├── images/                 # 球星头像
-└── gifs/                   # 动作 GIF
+# 3. 等待约 1 分钟，Vercel + Render 自动重新部署
 ```
