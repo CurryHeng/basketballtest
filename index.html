@@ -13,6 +13,7 @@
         <button class="nav-btn" data-page="rankings">排行榜</button>
         <a href="image-search.html" class="nav-link-btn">图片搜索</a>
         <a href="contribute.html" class="nav-link-btn">贡献图片</a>
+        <button id="admin-nav-btn" class="nav-btn hidden" data-page="admin">管理</button>
         <div class="nav-auth">
             <button id="login-btn" class="nav-link-btn">登录</button>
             <div id="user-info" class="user-info hidden">
@@ -212,6 +213,60 @@
                 <h3>💬 专家点评</h3>
                 <div class="user-comments" id="user-comments"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- 管理员页面 -->
+    <div id="admin-page" class="page hidden">
+        <div class="admin-container">
+            <h2 class="rankings-title">⚙️ 管理面板</h2>
+            <p class="talent-subtitle" id="admin-subtitle">管理员面板</p>
+
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="admin-users">用户管理</button>
+                <button class="admin-tab" data-tab="admin-analyzes">分析记录</button>
+            </div>
+
+            <div id="admin-users" class="admin-tab-content">
+                <h3>用户列表</h3>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>邮箱</th>
+                                <th>管理员</th>
+                                <th>分析数</th>
+                                <th>注册时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-analyzes" class="admin-tab-content hidden">
+                <h3>分析记录</h3>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>用户</th>
+                                <th>匹配球星</th>
+                                <th>综合评分</th>
+                                <th>时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-analyzes-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <button id="back-from-admin" class="btn-retry">← 返回首页</button>
         </div>
     </div>
 

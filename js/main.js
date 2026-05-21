@@ -8,10 +8,17 @@ let debounceTimer = null;
 const IS_LOCAL = !window.location.hostname || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE = IS_LOCAL ? '' : 'https://CurryHeng.pythonanywhere.com';
 
+async function apiFetch(path, options = {}) {
+    const headers = { ...getAuthHeaders(), ...options.headers };
+    const r = await fetch(`${API_BASE}${path}`, { ...options, headers });
+    return r.json();
+}
+
 const homePage = document.getElementById('home-page');
 const detailPage = document.getElementById('detail-page');
 const talentPage = document.getElementById('talent-page');
 const rankingsPage = document.getElementById('rankings-page');
+const adminPage = document.getElementById('admin-page');
 const searchInput = document.getElementById('search-input');
 const teamTagsContainer = document.getElementById('team-tags');
 const cardsContainer = document.getElementById('cards-container');
@@ -57,13 +64,20 @@ function updateAuthUI() {
     const loginBtn = document.getElementById('login-btn');
     const userInfo = document.getElementById('user-info');
     const userDisplay = document.getElementById('user-display');
+    const adminBtn = document.getElementById('admin-nav-btn');
     if (currentUser) {
         loginBtn.classList.add('hidden');
         userInfo.classList.remove('hidden');
         userDisplay.textContent = currentUser.username;
+        if (currentUser.isAdmin) {
+            adminBtn.classList.remove('hidden');
+        } else {
+            adminBtn.classList.add('hidden');
+        }
     } else {
         loginBtn.classList.remove('hidden');
         userInfo.classList.add('hidden');
+        adminBtn.classList.add('hidden');
     }
 }
 
@@ -156,7 +170,107 @@ document.getElementById('logout-btn').addEventListener('click', () => {
     currentUser = null;
     clearToken();
     updateAuthUI();
+    if (adminPage && !adminPage.classList.contains('hidden')) {
+        switchPage('home');
+        document.querySelector('.nav-btn[data-page="home"]').click();
+    }
 });
+
+// ── 管理员面板 ──────────────────────────────────────
+
+async function loadAdminData() {
+    if (!currentUser || !currentUser.isAdmin) return;
+    document.getElementById('admin-subtitle').textContent = '管理员：' + currentUser.username;
+    loadAdminUsers();
+    loadAdminAnalyzes();
+}
+
+async function loadAdminUsers() {
+    const tbody = document.getElementById('admin-users-tbody');
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center">加载中...</td></tr>';
+    try {
+        const data = await apiFetch('/api/admin/users');
+        if (!data.success) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#ff4444">加载失败</td></tr>'; return; }
+        tbody.innerHTML = data.users.map(u => `
+            <tr>
+                <td>${u.id}</td>
+                <td><strong>${u.username}</strong></td>
+                <td>${u.email || '-'}</td>
+                <td><span class="admin-badge ${u.is_admin ? 'admin-badge-yes' : 'admin-badge-no'}">${u.is_admin ? '是' : '否'}</span></td>
+                <td>${u.analyze_count}</td>
+                <td>${u.created_at}</td>
+                <td>
+                    ${!u.is_admin ? `<button class="btn-admin-primary" onclick="setAdmin(${u.id})">设为管理员</button>` : ''}
+                    <button class="btn-admin-danger" onclick="deleteUser(${u.id}, '${u.username}')">删除</button>
+                </td>
+            </tr>
+        `).join('');
+    } catch { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#ff4444">请求失败</td></tr>'; }
+}
+
+async function loadAdminAnalyzes() {
+    const tbody = document.getElementById('admin-analyzes-tbody');
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">加载中...</td></tr>';
+    try {
+        const data = await apiFetch('/api/admin/analyzes');
+        if (!data.success) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#ff4444">加载失败</td></tr>'; return; }
+        if (data.analyzes.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted)">暂无分析记录</td></tr>';
+            return;
+        }
+        tbody.innerHTML = data.analyzes.map(a => `
+            <tr>
+                <td>${a.id}</td>
+                <td>${a.username || '游客'}</td>
+                <td>${a.matchedStar || '-'}</td>
+                <td>${a.totalScore}</td>
+                <td>${a.createdAt}</td>
+                <td><button class="btn-admin-danger" onclick="deleteAnalyze(${a.id})">删除</button></td>
+            </tr>
+        `).join('');
+    } catch { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#ff4444">请求失败</td></tr>'; }
+}
+
+async function setAdmin(userId) {
+    if (!confirm('确定将该用户设为管理员？')) return;
+    const data = await apiFetch(`/api/admin/user/${userId}/set-admin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isAdmin: true })
+    });
+    if (data.success) loadAdminUsers();
+}
+
+async function deleteUser(userId, username) {
+    if (!confirm(`确定删除用户"${username}"及其所有数据？此操作不可恢复！`)) return;
+    const data = await apiFetch(`/api/admin/user/${userId}`, { method: 'DELETE' });
+    if (data.success) loadAdminUsers();
+}
+
+async function deleteAnalyze(analyzeId) {
+    if (!confirm(`确定删除该分析记录？`)) return;
+    const data = await apiFetch(`/api/admin/analyze/${analyzeId}`, { method: 'DELETE' });
+    if (data.success) loadAdminAnalyzes();
+}
+
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.remove('hidden');
+    });
+});
+
+document.getElementById('back-from-admin').addEventListener('click', () => {
+    switchPage('home');
+    document.querySelector('.nav-btn[data-page="home"]').click();
+});
+
+// Make admin functions globally accessible for onclick
+window.setAdmin = setAdmin;
+window.deleteUser = deleteUser;
+window.deleteAnalyze = deleteAnalyze;
 
 navBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -172,7 +286,8 @@ function switchPage(page) {
     detailPage.classList.add('hidden');
     talentPage.classList.add('hidden');
     rankingsPage.classList.add('hidden');
-    
+    if (adminPage) adminPage.classList.add('hidden');
+
     if (page === 'home') {
         homePage.classList.remove('hidden');
     } else if (page === 'talent') {
@@ -180,6 +295,9 @@ function switchPage(page) {
     } else if (page === 'rankings') {
         rankingsPage.classList.remove('hidden');
         loadRankings();
+    } else if (page === 'admin') {
+        adminPage.classList.remove('hidden');
+        loadAdminData();
     }
 }
 

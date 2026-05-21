@@ -25,6 +25,12 @@ from backend.database import (
     verify_user,
     get_user_by_id,
     get_token_serializer,
+    is_first_admin,
+    get_all_users_admin,
+    set_user_admin,
+    delete_user_by_id,
+    get_all_analyzes,
+    delete_analyze_by_id,
 )
 from backend.talent_analyzer import analyze_talent
 
@@ -33,8 +39,8 @@ app = Flask(__name__)
 CORS(app, resources={
     r"/api/*": {
         "origins": "*",
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
     }
 })
 
@@ -309,7 +315,77 @@ def auth_me():
         }
     })
 
-if __name__ == '__main__':
+# ── 管理员接口 ──────────────────────────────────────
+
+def require_admin():
+    """要求管理员权限，返回 user 或中断请求"""
+    user_id = require_auth()
+    if not user_id:
+        return jsonify({'error': '未登录'}), 401
+    user = get_user_by_id(user_id)
+    if not user or not user.get('is_admin'):
+        return jsonify({'error': '需要管理员权限'}), 403
+    return user
+
+@app.route('/api/admin/setup', methods=['POST'])
+def admin_setup():
+    """首次部署时设置第一个管理员（仅当尚无管理员时可调用）"""
+    if not is_first_admin():
+        return jsonify({'error': '管理员已存在'}), 403
+    try:
+        data = request.get_json()
+        username = (data.get('username') or '').strip()
+        password = (data.get('password') or '').strip()
+        if not username or not password:
+            return jsonify({'error': '请输入用户名和密码'}), 400
+        user_id, err = create_user(username, '', password)
+        if err:
+            return jsonify({'error': err}), 409
+        set_user_admin(user_id, True)
+        return jsonify({'success': True, 'message': '管理员创建成功', 'userId': user_id})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/users', methods=['GET'])
+def admin_users():
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    users = get_all_users_admin()
+    return jsonify({'success': True, 'users': users})
+
+@app.route('/api/admin/user/<int:user_id>/set-admin', methods=['POST'])
+def admin_set_admin(user_id):
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    data = request.get_json()
+    set_user_admin(user_id, data.get('isAdmin', True))
+    return jsonify({'success': True})
+
+@app.route('/api/admin/user/<int:user_id>', methods=['DELETE'])
+def admin_delete_user(user_id):
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    delete_user_by_id(user_id)
+    return jsonify({'success': True})
+
+@app.route('/api/admin/analyzes', methods=['GET'])
+def admin_analyzes():
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    analyzes = get_all_analyzes()
+    return jsonify({'success': True, 'analyzes': analyzes})
+
+@app.route('/api/admin/analyze/<int:analyze_id>', methods=['DELETE'])
+def admin_delete_analyze(analyze_id):
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    delete_analyze_by_id(analyze_id)
+    return jsonify({'success': True})
     print("=" * 50)
     print("篮球天赋分析后端启动")
     print("=" * 50)

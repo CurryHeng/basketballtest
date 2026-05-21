@@ -160,6 +160,88 @@ def get_user_by_id(user_id):
     conn.close()
     return dict(row) if row else None
 
+# ── 管理员相关 ──────────────────────────────────────
+
+def is_first_admin():
+    """检查是否还没有管理员"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) as c FROM users WHERE is_admin = 1")
+    count = cursor.fetchone()['c']
+    conn.close()
+    return count == 0
+
+def get_all_users_admin():
+    """管理员获取所有用户"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT u.id, u.username, u.email, u.is_admin, u.created_at,
+               COUNT(ts.id) as analyze_count
+        FROM users u
+        LEFT JOIN talent_scores ts ON u.id = ts.user_id
+        GROUP BY u.id
+        ORDER BY u.created_at DESC
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+def set_user_admin(user_id, is_admin):
+    """设置/取消管理员"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET is_admin = ? WHERE id = ?", (1 if is_admin else 0, user_id))
+    conn.commit()
+    conn.close()
+
+def delete_user_by_id(user_id):
+    """删除用户及其所有分析数据"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM rankings WHERE user_id = ?", (user_id,))
+    cursor.execute("DELETE FROM talent_scores WHERE user_id = ?", (user_id,))
+    cursor.execute("DELETE FROM user_profiles WHERE id = ?", (user_id,))
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    conn.commit()
+    conn.close()
+
+def get_all_analyzes():
+    """管理员获取所有分析记录"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT ts.id, ts.user_id, u.username, ts.matched_star,
+               ts.scores, ts.created_at
+        FROM talent_scores ts
+        LEFT JOIN users u ON ts.user_id = u.id
+        ORDER BY ts.created_at DESC
+        LIMIT 100
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    results = []
+    for r in rows:
+        s = json.loads(r['scores']) if r['scores'] else {}
+        total = sum(s.values()) / len(s) if s else 0
+        results.append({
+            'id': r['id'],
+            'userId': r['user_id'],
+            'username': r['username'],
+            'matchedStar': r['matched_star'],
+            'totalScore': round(total, 1),
+            'createdAt': r['created_at']
+        })
+    return results
+
+def delete_analyze_by_id(analyze_id):
+    """删除分析记录"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM talent_scores WHERE id = ?", (analyze_id,))
+    conn.commit()
+    conn.close()
+
 def save_user_profile(data):
     """保存用户身体素质数据"""
     conn = get_db()
