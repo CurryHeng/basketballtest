@@ -4,11 +4,9 @@ let selectedTeam = '全部';
 let searchQuery = '';
 let debounceTimer = null;
 
-// 本地开发用 localhost:5000，部署后指向 PythonAnywhere
+// 本地开发直接走同域（Flask 托管前端），部署后指向 PythonAnywhere
 const IS_LOCAL = !window.location.hostname || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const API_BASE = IS_LOCAL
-  ? 'http://127.0.0.1:5000'
-  : 'https://CurryHeng.pythonanywhere.com';
+const API_BASE = IS_LOCAL ? '' : 'https://CurryHeng.pythonanywhere.com';
 
 const homePage = document.getElementById('home-page');
 const detailPage = document.getElementById('detail-page');

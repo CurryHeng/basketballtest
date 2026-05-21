@@ -4,12 +4,14 @@ Flask主应用 - 篮球天赋分析后端
 极简轻量化设计，方便二次开发
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 from backend.database import (
     init_db,
@@ -41,20 +43,33 @@ init_db()
 
 @app.route('/')
 def index():
-    """首页"""
-    return jsonify({
-        'message': '篮球天赋分析API',
-        'version': '1.0.0',
-        'endpoints': [
-            'POST /api/analyze - 提交数据并分析天赋',
-            'GET /api/rankings - 获取排行榜',
-            'GET /api/users - 获取所有用户',
-            'GET /api/user/<user_id> - 获取用户详情',
-            'GET /api/history/<user_id> - 获取用户历史',
-            'POST /api/video/upload - 预留视频上传接口',
-            'POST /api/duel/compare - 预留双人对比接口'
-        ]
-    })
+    """首页 — 浏览器访问返回前端页面，API 请求返回 API 信息"""
+    if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
+        return jsonify({
+            'message': '篮球天赋分析API',
+            'version': '1.0.0',
+            'endpoints': [
+                'POST /api/analyze - 提交数据并分析天赋',
+                'GET /api/rankings - 获取排行榜',
+                'GET /api/users - 获取所有用户',
+                'GET /api/user/<user_id> - 获取用户详情',
+                'GET /api/history/<user_id> - 获取用户历史',
+                'POST /api/auth/register - 注册',
+                'POST /api/auth/login - 登录',
+                'GET /api/auth/me - 当前用户信息',
+            ]
+        })
+    return send_from_directory(ROOT_DIR, 'index.html')
+
+@app.route('/<path:filename>')
+def static_files(filename):
+    """托管前端静态文件（js/css/images/data）"""
+    if filename.startswith('api/'):
+        return jsonify({'error': 'not found'}), 404
+    filepath = os.path.join(ROOT_DIR, filename)
+    if os.path.exists(filepath) and os.path.isfile(filepath):
+        return send_from_directory(ROOT_DIR, filename)
+    return jsonify({'error': 'not found'}), 404
 
 @app.route('/api/analyze', methods=['POST', 'OPTIONS'])
 def analyze():
