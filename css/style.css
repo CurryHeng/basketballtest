@@ -420,6 +420,22 @@ body {
     object-fit: cover;
 }
 
+/* 静态动作图的 Ken Burns 慢缩放动画 */
+.action-still {
+    animation: kenBurns 8s ease-in-out infinite alternate;
+}
+
+@keyframes kenBurns {
+    0% {
+        transform: scale(1.0);
+        object-position: center;
+    }
+    100% {
+        transform: scale(1.12);
+        object-position: center 45%;
+    }
+}
+
 .action-desc {
     color: var(--text-secondary);
     font-size: 1rem;

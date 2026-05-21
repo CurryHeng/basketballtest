@@ -179,6 +179,10 @@ function showDetail(player) {
     detailImage.onload = () => detailImageLoading.style.display = 'none';
     detailImage.onerror = () => detailImageLoading.textContent = '图片未找到';
     
+    // 检测是否是真实 GIF，静态图则应用 Ken Burns 动画
+    const isRealGif = player.actionGif.endsWith('.gif');
+    detailGif.classList.toggle('action-still', !isRealGif);
+
     detailGif.src = player.actionGif;
     detailGif.alt = player.actionDescription;
     detailGif.onload = () => gifLoading.style.display = 'none';
