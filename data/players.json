@@ -80,7 +80,7 @@
     "weight": "280 lbs (127 kg)",
     "honors": "1x MVP, 7x All-Star, 3x All-Defensive First Team",
     "profileImage": "images/joel_embiid_profile.jpg",
-    "actionGif": "images/joel_embiid_action.jpg",
+    "actionGif": "gifs/joel_embiid_action.jpg",
     "actionDescription": "梦幻脚步内线进攻，喀麦隆大帝的禁区统治"
   },
   {
@@ -94,7 +94,7 @@
     "weight": "284 lbs (129 kg)",
     "honors": "3x MVP, 1x NBA Champion, 1x Finals MVP, 6x All-Star",
     "profileImage": "images/nikola_jokic_profile.jpg",
-    "actionGif": "images/nikola_jokic_action.jpg",
+    "actionGif": "gifs/nikola_jokic_action.jpg",
     "actionDescription": "鬼魅不看人传球，塞尔维亚天才的中锋魔术"
   },
   {
@@ -108,7 +108,7 @@
     "weight": "210 lbs (95 kg)",
     "honors": "1x NBA Champion, 5x All-Star, 4x All-NBA",
     "profileImage": "images/jayson_tatum_profile.jpg",
-    "actionGif": "images/jayson_tatum_action.jpg",
+    "actionGif": "gifs/jayson_tatum_action.jpg",
     "actionDescription": "丝滑后撤步中投，绿军新王的得分盛宴"
   },
   {
@@ -122,7 +122,7 @@
     "weight": "253 lbs (115 kg)",
     "honors": "1x NBA Champion, 10x All-Star, 4x All-Defensive First Team",
     "profileImage": "images/anthony_davis_profile.jpg",
-    "actionGif": "images/anthony_davis_action.jpg",
+    "actionGif": "gifs/anthony_davis_action.jpg",
     "actionDescription": "遮天蔽日大火锅，浓眉哥的防守禁区"
   },
   {
@@ -136,7 +136,7 @@
     "weight": "225 lbs (102 kg)",
     "honors": "2x NBA Champion, 2x Finals MVP, 6x All-Star, 2x DPOY",
     "profileImage": "images/kawhi_leonard_profile.jpg",
-    "actionGif": "images/kawhi_leonard_action.jpg",
+    "actionGif": "gifs/kawhi_leonard_action.jpg",
     "actionDescription": "机器人般精准中投，沉默杀手的致命一击"
   },
   {
@@ -150,7 +150,7 @@
     "weight": "195 lbs (88 kg)",
     "honors": "8x All-Star, NBA 75th Anniversary Team",
     "profileImage": "images/damian_lillard_profile.jpg",
-    "actionGif": "images/damian_lillard_action.jpg",
+    "actionGif": "gifs/damian_lillard_action.jpg",
     "actionDescription": "Logo超远三分绝杀，利拉德时间的致命时刻"
   },
   {
@@ -164,7 +164,7 @@
     "weight": "195 lbs (88 kg)",
     "honors": "2x All-Star, 2x All-NBA First Team",
     "profileImage": "images/shai_gilgeous-alexander_profile.jpg",
-    "actionGif": "images/shai_gilgeous_alexander_action.jpg",
+    "actionGif": "gifs/shai_gilgeous_alexander_action.jpg",
     "actionDescription": "蛇形突破撕裂防线，加拿大新星崛起之路"
   },
   {
@@ -178,7 +178,7 @@
     "weight": "225 lbs (102 kg)",
     "honors": "2x All-Star, Most Improved Player Candidate",
     "profileImage": "images/anthony_edwards_profile.jpg",
-    "actionGif": "images/anthony_edwards_action.jpg",
+    "actionGif": "gifs/anthony_edwards_action.jpg",
     "actionDescription": "暴力美学扣篮，新生代飞人的震撼表演"
   },
   {
@@ -192,7 +192,7 @@
     "weight": "190 lbs (86 kg)",
     "honors": "1x All-Star, 1x All-NBA Second Team",
     "profileImage": "images/jalen_brunson_profile.jpg",
-    "actionGif": "images/jalen_brunson_action.jpg",
+    "actionGif": "gifs/jalen_brunson_action.jpg",
     "actionDescription": "关键时刻大心脏，纽约新王的领袖气质"
   },
   {
@@ -206,7 +206,7 @@
     "weight": "206 lbs (93 kg)",
     "honors": "4x All-Star, 70-Point Game Record",
     "profileImage": "images/devin_booker_profile.jpg",
-    "actionGif": "images/devin_booker_action.jpg",
+    "actionGif": "gifs/devin_booker_action.jpg",
     "actionDescription": "丝滑中距离投篮，太阳神射手的得分盛宴"
   },
   {
@@ -220,7 +220,7 @@
     "weight": "230 lbs (104 kg)",
     "honors": "6x All-Star, 5x All-Defensive, 2x Finals Appearance",
     "profileImage": "images/jimmy_butler_profile.jpg",
-    "actionGif": "images/jimmy_butler_action.jpg",
+    "actionGif": "gifs/jimmy_butler_action.jpg",
     "actionDescription": "季后赛模式觉醒，硬汉 Butler 的关键时刻"
   },
   {
@@ -234,7 +234,7 @@
     "weight": "164 lbs (74 kg)",
     "honors": "3x All-Star, 1x All-NBA, Finals Appearance",
     "profileImage": "images/trae_young_profile.jpg",
-    "actionGif": "images/trae_young_action.jpg",
+    "actionGif": "gifs/trae_young_action.jpg",
     "actionDescription": "超远三分加抛投，冰吹羊的得分武器库"
   },
   {
@@ -248,7 +248,7 @@
     "weight": "195 lbs (88 kg)",
     "honors": "1x NBA Champion, 8x All-Star, 50-40-90 Club",
     "profileImage": "images/kyrie_irving_profile.jpg",
-    "actionGif": "images/kyrie_irving_action.jpg",
+    "actionGif": "gifs/kyrie_irving_action.jpg",
     "actionDescription": "史诗级运球过人，德鲁大叔的街球艺术"
   },
   {
@@ -262,7 +262,7 @@
     "weight": "255 lbs (116 kg)",
     "honors": "3x All-Star, 5x All-Defensive, 2x Finals Appearance",
     "profileImage": "images/bam_adebayo_profile.jpg",
-    "actionGif": "images/bam_adebayo_action.jpg",
+    "actionGif": "gifs/bam_adebayo_action.jpg",
     "actionDescription": "全能防守大闸，热火铁壁的禁区守护"
   },
   {
