@@ -4,10 +4,10 @@ let selectedTeam = '全部';
 let searchQuery = '';
 let debounceTimer = null;
 
-// 本地开发用 localhost:5000（需启动 Flask），GitHub Pages 上线后改成 Render 地址
+// 本地开发用 localhost:5000，部署后指向 PythonAnywhere
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://127.0.0.1:5000'
-  : 'https://basketball-api.onrender.com';
+  : 'https://CurryHeng.pythonanywhere.com';
 
 const homePage = document.getElementById('home-page');
 const detailPage = document.getElementById('detail-page');

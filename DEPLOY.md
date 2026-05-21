@@ -1,30 +1,35 @@
 # 部署指南
 
-## 第一步：GitHub Pages（前端）
+## GitHub Pages（前端）
 
-1. 打开 https://github.com/CurryHeng/basketballtest → **Settings** → **Pages**
-2. **Source** → **Deploy from branch** → **Branch**: `master`, `/ (root)` → **Save**
-3. 等 2 分钟，访问 `https://curryheng.github.io/basketballtest/`
+1. GitHub 仓库 **Settings → Pages**
+2. **Source**: Deploy from branch → **Branch**: master, / (root) → Save
+3. 访问 `https://curryheng.github.io/basketballtest/`
 
-## 第二步：Render（后端 API）— 约 3 分钟
+## PythonAnywhere（后端 API）
 
-> 前提：GitHub 仓库已设置好，`render.yaml` 已包含部署配置。
+1. 注册 https://www.pythonanywhere.com
+2. 打开 **Bash 控制台**：
+   ```bash
+   git clone https://github.com/CurryHeng/basketballtest.git
+   cd basketballtest
+   pip install -r requirements.txt --user
+   ```
+3. **Web** → **Add a new web app** → **Manual Configuration** → Python 3.10
+4. 编辑 **WSGI configuration file**，内容：
+   ```python
+   import sys, os
+   path = '/home/CurryHeng/basketballtest'
+   if path not in sys.path:
+       sys.path.append(path)
+   from app import app as application
+   ```
+5. **Static files** 设置：
 
-1. 打开 https://dashboard.render.com
-2. 用 GitHub 账号登录
-3. 点 **New +** → **Blueprint**
-4. 选择仓库 `CurryHeng/basketballtest`
-5. 点 **Apply** → 等 2 分钟部署完成
-6. 访问 `https://basketball-api.onrender.com` 验证
+   | URL | Directory |
+   |-----|-----------|
+   | `/` | `/home/CurryHeng/basketballtest/` |
 
-部署后天赋分析和排行榜功能就都能用了。
+6. 点 **Reload**
 
-## 以后加功能
-
-```bash
-git add .
-git commit -m "添加了新功能"
-git push
-# GitHub Pages 自动更新前端
-# Render 自动重新部署后端
-```
+后端地址：`https://CurryHeng.pythonanywhere.com`
