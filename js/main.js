@@ -5,7 +5,8 @@ let searchQuery = '';
 let debounceTimer = null;
 
 // 本地开发用 localhost:5000，部署后指向 PythonAnywhere
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const IS_LOCAL = !window.location.hostname || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE = IS_LOCAL
   ? 'http://127.0.0.1:5000'
   : 'https://CurryHeng.pythonanywhere.com';
 
