@@ -7,6 +7,8 @@ import sqlite3
 import json
 from datetime import datetime
 from pathlib import Path
+from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 
 DB_PATH = Path(__file__).parent.parent / "data" / "basketball.db"
 
@@ -91,10 +93,72 @@ def init_db():
             FOREIGN KEY (user2_id) REFERENCES user_profiles (id)
         )
     """)
-    
+
+    # 用户账号表
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            email TEXT,
+            password_hash TEXT NOT NULL,
+            is_admin INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
     conn.commit()
     conn.close()
     print("数据库初始化完成")
+
+# ── 认证相关 ──────────────────────────────────────────
+
+SECRET_KEY = "basketball-talent-secret-key-2024"
+
+def get_token_serializer():
+    return URLSafeTimedSerializer(SECRET_KEY, salt='auth')
+
+def create_user(username, email, password):
+    """注册新用户"""
+    conn = get_db()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            INSERT INTO users (username, email, password_hash)
+            VALUES (?, ?, ?)
+        """, (username, email, generate_password_hash(password)))
+        conn.commit()
+        user_id = cursor.lastrowid
+        conn.close()
+        return user_id, None
+    except sqlite3.IntegrityError:
+        conn.close()
+        return None, '用户名已存在'
+
+def verify_user(username, password):
+    """验证用户登录，成功返回 (user, token)，失败返回 (None, 错误消息)"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        return None, '用户名或密码错误'
+    if not check_password_hash(row['password_hash'], password):
+        return None, '用户名或密码错误'
+    user = dict(row)
+    del user['password_hash']
+    serializer = get_token_serializer()
+    token = serializer.dumps({'user_id': user['id']})
+    return user, token
+
+def get_user_by_id(user_id):
+    """根据 ID 获取用户信息"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, email, is_admin, created_at FROM users WHERE id = ?", (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return dict(row) if row else None
 
 def save_user_profile(data):
     """保存用户身体素质数据"""

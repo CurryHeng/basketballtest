@@ -26,6 +26,139 @@ const talentForm = document.getElementById('talent-form');
 const talentResult = document.getElementById('talent-result');
 const rankingsList = document.getElementById('rankings-list');
 
+// ── 认证状态 ──
+let currentUser = null;
+const TOKEN_KEY = 'basketball_auth_token';
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+function setToken(t) { localStorage.setItem(TOKEN_KEY, t); }
+function clearToken() { localStorage.removeItem(TOKEN_KEY); }
+
+function getAuthHeaders() {
+    const t = getToken();
+    return t ? { 'Content-Type': 'application/json', 'Authorization': `Bearer ${t}` } : { 'Content-Type': 'application/json' };
+}
+
+async function checkAuth() {
+    const token = getToken();
+    if (!token) return;
+    try {
+        const r = await fetch(`${API_BASE}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await r.json();
+        if (data.success) {
+            currentUser = data.user;
+            updateAuthUI();
+        } else {
+            clearToken();
+        }
+    } catch { /* offline */ }
+}
+
+function updateAuthUI() {
+    const loginBtn = document.getElementById('login-btn');
+    const userInfo = document.getElementById('user-info');
+    const userDisplay = document.getElementById('user-display');
+    if (currentUser) {
+        loginBtn.classList.add('hidden');
+        userInfo.classList.remove('hidden');
+        userDisplay.textContent = currentUser.username;
+    } else {
+        loginBtn.classList.remove('hidden');
+        userInfo.classList.add('hidden');
+    }
+}
+
+// ── 登录弹窗 ──
+function openAuth() {
+    document.getElementById('auth-modal').classList.remove('hidden');
+    document.getElementById('auth-error').classList.add('hidden');
+    document.getElementById('reg-error').classList.add('hidden');
+    showLoginForm();
+}
+
+function closeAuth() {
+    document.getElementById('auth-modal').classList.add('hidden');
+}
+
+function showLoginForm() {
+    document.getElementById('auth-title').textContent = '登录';
+    document.getElementById('login-form').classList.remove('hidden');
+    document.getElementById('register-form').classList.add('hidden');
+}
+
+function showRegisterForm() {
+    document.getElementById('auth-title').textContent = '注册';
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('register-form').classList.remove('hidden');
+}
+
+document.getElementById('login-btn').addEventListener('click', openAuth);
+document.getElementById('auth-close').addEventListener('click', closeAuth);
+document.getElementById('auth-overlay').addEventListener('click', closeAuth);
+document.getElementById('switch-to-register').addEventListener('click', (e) => { e.preventDefault(); showRegisterForm(); });
+document.getElementById('switch-to-login').addEventListener('click', (e) => { e.preventDefault(); showLoginForm(); });
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errEl = document.getElementById('auth-error');
+    try {
+        const r = await fetch(`${API_BASE}/api/auth/login`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const data = await r.json();
+        if (data.success) {
+            setToken(data.token);
+            currentUser = data.user;
+            updateAuthUI();
+            closeAuth();
+        } else {
+            errEl.textContent = data.error;
+            errEl.classList.remove('hidden');
+        }
+    } catch {
+        errEl.textContent = '无法连接服务器';
+        errEl.classList.remove('hidden');
+    }
+});
+
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('reg-username').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
+    const errEl = document.getElementById('reg-error');
+    try {
+        const r = await fetch(`${API_BASE}/api/auth/register`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+        });
+        const data = await r.json();
+        if (data.success) {
+            errEl.textContent = '注册成功，请登录';
+            errEl.className = 'auth-success';
+            showLoginForm();
+            document.getElementById('login-username').value = username;
+        } else {
+            errEl.textContent = data.error;
+            errEl.className = 'auth-error';
+            errEl.classList.remove('hidden');
+        }
+    } catch {
+        errEl.textContent = '无法连接服务器';
+        errEl.className = 'auth-error';
+        errEl.classList.remove('hidden');
+    }
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+    currentUser = null;
+    clearToken();
+    updateAuthUI();
+});
+
 navBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         const page = btn.dataset.page;
@@ -395,8 +528,9 @@ function init() {
     searchInput.addEventListener('input', debouncedFilter);
     clearFiltersBtn.addEventListener('click', clearFilters);
     backBtn.addEventListener('click', showHome);
-    
+
     loadPlayers();
+    checkAuth();
 }
 
 document.addEventListener('DOMContentLoaded', init);

@@ -1023,9 +1023,116 @@ body {
     .user-meta-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .matched-star-card {
         flex-direction: column;
         text-align: center;
     }
+}
+
+/* ── 认证 ────────────────────────────────────────── */
+
+.nav-auth {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-display {
+    color: var(--primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* 弹窗 */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+}
+
+.auth-modal-content {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 400px;
+    max-width: 90vw;
+    z-index: 1;
+}
+
+.auth-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.auth-close:hover {
+    color: var(--text-primary);
+}
+
+.auth-modal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.auth-form {
+    margin-top: 1.5rem;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 1rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.auth-switch a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+.auth-error {
+    color: #ff4444;
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 0.75rem;
+}
+
+.auth-success {
+    color: #44ff44;
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 0.75rem;
 }

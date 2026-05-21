@@ -18,7 +18,11 @@ from backend.database import (
     get_rankings,
     get_user_history,
     get_all_users,
-    get_user_detail
+    get_user_detail,
+    create_user,
+    verify_user,
+    get_user_by_id,
+    get_token_serializer,
 )
 from backend.talent_analyzer import analyze_talent
 
@@ -197,16 +201,97 @@ def duel_compare():
 def get_templates():
     """获取球星模板列表（方便前端展示）"""
     from backend.config.matching_rules import STAR_TEMPLATES_ACTIVE, STAR_TEMPLATES_FUN
-    
-    active = [{'name': t['name'], 'nickname': t['nickname'], 'position': t['position']} 
+
+    active = [{'name': t['name'], 'nickname': t['nickname'], 'position': t['position']}
               for t in STAR_TEMPLATES_ACTIVE]
-    fun = [{'name': t['name'], 'nickname': t['nickname']} 
+    fun = [{'name': t['name'], 'nickname': t['nickname']}
            for t in STAR_TEMPLATES_FUN]
-    
+
     return jsonify({
         'success': True,
         'active': active,
         'fun': fun
+    })
+
+# ── 认证接口 ──────────────────────────────────────────
+
+from itsdangerous import BadSignature, SignatureExpired
+
+def require_auth():
+    """从请求头解析认证用户，返回 user_id 或 None"""
+    auth = request.headers.get('Authorization', '')
+    if not auth.startswith('Bearer '):
+        return None
+    token = auth[7:]
+    try:
+        data = get_token_serializer().loads(token, max_age=86400 * 7)  # 7 天有效期
+        return data['user_id']
+    except (BadSignature, SignatureExpired):
+        return None
+
+@app.route('/api/auth/register', methods=['POST', 'OPTIONS'])
+def auth_register():
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'})
+    try:
+        data = request.get_json()
+        username = (data.get('username') or '').strip()
+        password = (data.get('password') or '').strip()
+        email = (data.get('email') or '').strip()
+        if not username or len(username) < 2:
+            return jsonify({'error': '用户名至少2个字符'}), 400
+        if not password or len(password) < 4:
+            return jsonify({'error': '密码至少4个字符'}), 400
+        user_id, err = create_user(username, email, password)
+        if err:
+            return jsonify({'error': err}), 409
+        return jsonify({'success': True, 'userId': user_id})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/auth/login', methods=['POST', 'OPTIONS'])
+def auth_login():
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'})
+    try:
+        data = request.get_json()
+        username = (data.get('username') or '').strip()
+        password = (data.get('password') or '').strip()
+        if not username or not password:
+            return jsonify({'error': '请输入用户名和密码'}), 400
+        user, token = verify_user(username, password)
+        if not user:
+            return jsonify({'error': token}), 401
+        return jsonify({
+            'success': True,
+            'token': token,
+            'user': {
+                'id': user['id'],
+                'username': user['username'],
+                'email': user.get('email', ''),
+                'isAdmin': bool(user.get('is_admin', 0))
+            }
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/auth/me', methods=['GET'])
+def auth_me():
+    user_id = require_auth()
+    if not user_id:
+        return jsonify({'error': '未登录或登录已过期'}), 401
+    user = get_user_by_id(user_id)
+    if not user:
+        return jsonify({'error': '用户不存在'}), 404
+    return jsonify({
+        'success': True,
+        'user': {
+            'id': user['id'],
+            'username': user['username'],
+            'email': user.get('email', ''),
+            'isAdmin': bool(user.get('is_admin', 0)),
+            'createdAt': user.get('created_at', '')
+        }
     })
 
 if __name__ == '__main__':
