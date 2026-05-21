@@ -32,6 +32,9 @@ CORS(app, resources={
     }
 })
 
+# WSGI 部署下自动初始化数据库（__main__ 分支只在 python app.py 时执行）
+init_db()
+
 @app.route('/')
 def index():
     """首页"""
