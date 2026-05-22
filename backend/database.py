@@ -486,3 +486,34 @@ def get_player_images(player_name):
     rows = cursor.fetchall()
     conn.close()
     return [dict(r) for r in rows]
+
+
+def get_all_uploads():
+    """管理员获取所有上传记录"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT iu.id, iu.player_name, iu.player_id, iu.image_type,
+               iu.file_path, iu.original_name, iu.created_at,
+               u.username as uploaded_by_name
+        FROM image_uploads iu
+        LEFT JOIN users u ON iu.uploaded_by = u.id
+        ORDER BY iu.created_at DESC
+        LIMIT 100
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def delete_upload_by_id(upload_id):
+    """删除上传记录，返回被删除的文件路径"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT file_path FROM image_uploads WHERE id = ?", (upload_id,))
+    row = cursor.fetchone()
+    file_path = row['file_path'] if row else None
+    cursor.execute("DELETE FROM image_uploads WHERE id = ?", (upload_id,))
+    conn.commit()
+    conn.close()
+    return file_path

@@ -224,6 +224,7 @@
 
             <div class="admin-tabs">
                 <button class="admin-tab active" data-tab="admin-users">用户管理</button>
+                <button class="admin-tab" data-tab="admin-uploads">上传管理</button>
                 <button class="admin-tab" data-tab="admin-analyzes">分析记录</button>
             </div>
 
@@ -243,6 +244,26 @@
                             </tr>
                         </thead>
                         <tbody id="admin-users-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-uploads" class="admin-tab-content hidden">
+                <h3>用户上传的图片</h3>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>预览</th>
+                                <th>球员</th>
+                                <th>类型</th>
+                                <th>上传者</th>
+                                <th>时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-uploads-tbody"></tbody>
                     </table>
                 </div>
             </div>

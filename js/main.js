@@ -182,6 +182,7 @@ async function loadAdminData() {
     if (!currentUser || !currentUser.isAdmin) return;
     document.getElementById('admin-subtitle').textContent = '管理员：' + currentUser.username;
     loadAdminUsers();
+    loadAdminUploads();
     loadAdminAnalyzes();
 }
 
@@ -231,6 +232,54 @@ async function loadAdminAnalyzes() {
     } catch { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#ff4444">请求失败</td></tr>'; }
 }
 
+async function loadAdminUploads() {
+    const tbody = document.getElementById('admin-uploads-tbody');
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center">加载中...</td></tr>';
+    try {
+        const data = await apiFetch('/api/admin/uploads');
+        if (!data.success) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#ff4444">加载失败</td></tr>'; return; }
+        if (data.uploads.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted)">暂无上传图片</td></tr>';
+            return;
+        }
+        tbody.innerHTML = data.uploads.map(u => `
+            <tr>
+                <td>${u.id}</td>
+                <td><img src="${u.file_path}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'"></td>
+                <td>${u.player_name}</td>
+                <td>${u.image_type === 'profile' ? '头像' : '动作图'}</td>
+                <td>${u.uploaded_by_name || '游客'}</td>
+                <td>${u.created_at}</td>
+                <td>
+                    <button class="btn-admin-primary" onclick="approveUpload(${u.id})">采用</button>
+                    <button class="btn-admin-danger" onclick="deleteUpload(${u.id})">删除</button>
+                </td>
+            </tr>
+        `).join('');
+    } catch { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#ff4444">请求失败</td></tr>'; }
+}
+
+async function approveUpload(uploadId) {
+    if (!confirm('确定采用该图片？将替换当前球员的图片配置。')) return;
+    const data = await apiFetch(`/api/admin/uploads/${uploadId}/approve`, { method: 'POST' });
+    if (data.success) {
+        alert('已采用！' + (data.path ? ' 图片路径：' + data.path : ''));
+        loadAdminUploads();
+    } else {
+        alert('操作失败：' + (data.error || '未知错误'));
+    }
+}
+
+async function deleteUpload(uploadId) {
+    if (!confirm('确定删除该上传记录？图片文件也将被删除。')) return;
+    const data = await apiFetch(`/api/admin/uploads/${uploadId}`, { method: 'DELETE' });
+    if (data.success) {
+        loadAdminUploads();
+    } else {
+        alert('删除失败：' + (data.error || '未知错误'));
+    }
+}
+
 async function setAdmin(userId) {
     if (!confirm('确定将该用户设为管理员？')) return;
     const data = await apiFetch(`/api/admin/user/${userId}/set-admin`, {
@@ -271,6 +320,8 @@ document.getElementById('back-from-admin').addEventListener('click', () => {
 window.setAdmin = setAdmin;
 window.deleteUser = deleteUser;
 window.deleteAnalyze = deleteAnalyze;
+window.approveUpload = approveUpload;
+window.deleteUpload = deleteUpload;
 
 navBtns.forEach(btn => {
     btn.addEventListener('click', () => {

@@ -10,12 +10,14 @@ import sys
 import os
 import re
 import time
-from werkzeug.utils import secure_filename
+import json
+import shutil
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+import backend.database as db
 from backend.database import (
     init_db,
     save_user_profile,
@@ -36,6 +38,8 @@ from backend.database import (
     delete_analyze_by_id,
     save_image_upload,
     get_player_images,
+    get_all_uploads,
+    delete_upload_by_id,
 )
 from backend.talent_analyzer import analyze_talent
 
@@ -466,6 +470,92 @@ def admin_analyzes():
         return resp
     analyzes = get_all_analyzes()
     return jsonify({'success': True, 'analyzes': analyzes})
+
+@app.route('/api/admin/uploads', methods=['GET'])
+def admin_uploads():
+    """管理员查看所有上传图片"""
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    uploads = get_all_uploads()
+    return jsonify({'success': True, 'uploads': uploads})
+
+@app.route('/api/admin/uploads/<int:upload_id>', methods=['DELETE'])
+def admin_delete_upload(upload_id):
+    """管理员删除上传图片"""
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    file_path = delete_upload_by_id(upload_id)
+    # 删除物理文件
+    if file_path:
+        full_path = os.path.join(ROOT_DIR, file_path.lstrip('/'))
+        if os.path.exists(full_path):
+            os.remove(full_path)
+    return jsonify({'success': True})
+
+@app.route('/api/admin/uploads/<int:upload_id>/approve', methods=['POST'])
+def admin_approve_upload(upload_id):
+    """管理员采用上传图片：复制到 images/ 或 gifs/ 并更新 players.json"""
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    try:
+        conn = db.get_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM image_uploads WHERE id = ?", (upload_id,))
+        row = cursor.fetchone()
+        conn.close()
+        if not row:
+            return jsonify({'error': '记录不存在'}), 404
+
+        upload = dict(row)
+        src_path = os.path.join(ROOT_DIR, upload['file_path'].lstrip('/'))
+        if not os.path.exists(src_path):
+            return jsonify({'error': '文件不存在'}), 404
+
+        # 确定目标目录和文件名
+        player_slug = upload['player_name'].lower().replace(' ', '_')
+        player_slug = re.sub(r'[^\w\-]', '_', player_slug)
+        ext = upload['file_path'].rsplit('.', 1)[1].lower()
+
+        if upload['image_type'] == 'profile':
+            dest_dir = os.path.join(ROOT_DIR, 'images')
+            dest_name = f"{player_slug}_profile.{ext}"
+        else:
+            dest_dir = os.path.join(ROOT_DIR, 'gifs')
+            dest_name = f"{player_slug}_action.{ext}"
+
+        os.makedirs(dest_dir, exist_ok=True)
+        dest_path = os.path.join(dest_dir, dest_name)
+
+        # 复制文件
+        shutil.copy2(src_path, dest_path)
+        relative_path = f"images/{dest_name}" if upload['image_type'] == 'profile' else f"gifs/{dest_name}"
+
+        # 更新 players.json
+        players_path = os.path.join(ROOT_DIR, 'data', 'players.json')
+        if os.path.exists(players_path):
+            with open(players_path, 'r', encoding='utf-8') as f:
+                players = json.load(f)
+            for p in players:
+                if p['id'] == upload['player_id']:
+                    if upload['image_type'] == 'profile':
+                        p['profileImage'] = relative_path
+                    else:
+                        p['actionGif'] = relative_path
+                    break
+            with open(players_path, 'w', encoding='utf-8') as f:
+                json.dump(players, f, indent=2, ensure_ascii=False)
+
+        return jsonify({
+            'success': True,
+            'message': '已采用并更新球员数据',
+            'path': relative_path
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/admin/analyze/<int:analyze_id>', methods=['DELETE'])
 def admin_delete_analyze(analyze_id):
