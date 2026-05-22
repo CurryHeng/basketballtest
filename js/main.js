@@ -348,11 +348,14 @@ function switchPage(page) {
         talentPage.classList.remove('hidden');
     } else if (page === 'rankings') {
         rankingsPage.classList.remove('hidden');
-        // 根据当前激活的 tab 加载对应视图
         const activeTab = document.querySelector('.rankings-tab.active');
         if (activeTab && activeTab.dataset.view === 'lineup') {
+            document.getElementById('rankings-list').classList.add('hidden');
+            document.getElementById('lineup-view').classList.remove('hidden');
             loadLineup();
         } else {
+            document.getElementById('rankings-list').classList.remove('hidden');
+            document.getElementById('lineup-view').classList.add('hidden');
             loadRankings();
         }
     } else if (page === 'admin') {
