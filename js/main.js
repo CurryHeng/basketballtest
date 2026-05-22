@@ -535,7 +535,13 @@ function clearFilters() {
 
 talentForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
+    // 未登录不能填写数据
+    if (!currentUser) {
+        openAuth();
+        return;
+    }
+
     const formData = new FormData(talentForm);
     const data = {
         nickname: formData.get('nickname'),
@@ -551,7 +557,7 @@ talentForm.addEventListener('submit', async (e) => {
     try {
         const response = await fetch(`${API_BASE}/api/analyze`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getAuthHeaders(),
             body: JSON.stringify(data)
         });
         
@@ -772,7 +778,12 @@ function init() {
     backBtn.addEventListener('click', showHome);
 
     loadPlayers();
-    checkAuth();
+    checkAuth().then(() => {
+        // 未登录时自动弹出登录框
+        if (!currentUser) {
+            openAuth();
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', init);

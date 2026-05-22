@@ -114,18 +114,24 @@ def analyze():
     """
     if request.method == 'OPTIONS':
         return jsonify({'status': 'ok'})
-    
+
+    # 必须登录后才能分析天赋
+    auth_user_id = require_auth()
+    if not auth_user_id:
+        return jsonify({'error': '请先登录后再进行天赋分析'}), 401
+
     try:
         data = request.get_json()
-        
+
         if not data:
             return jsonify({'error': '请求数据为空'}), 400
-        
+
         required_fields = ['height', 'weight']
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'缺少必填字段: {field}'}), 400
-        
+
+        data['authUserId'] = auth_user_id
         user_id = save_user_profile(data)
         
         result = analyze_talent(data)
