@@ -245,7 +245,7 @@ async function loadAdminUploads() {
         tbody.innerHTML = data.uploads.map(u => `
             <tr>
                 <td>${u.id}</td>
-                <td><img src="${u.file_path}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'"></td>
+                <td><img src="${API_BASE}${u.file_path}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'"></td>
                 <td>${u.player_name}</td>
                 <td>${u.image_type === 'profile' ? '头像' : '动作图'}</td>
                 <td>${u.uploaded_by_name || '游客'}</td>
@@ -361,7 +361,12 @@ async function loadPlayers() {
         if (!response.ok) throw new Error('无法加载数据');
         const result = await response.json();
         if (!result.success) throw new Error('数据加载失败');
-        players = result.data;
+        // 图片路径补上 API_BASE 前缀，确保从后端服务器加载（部署环境下 GitHub Pages 上无图片文件）
+        players = result.data.map(p => ({
+            ...p,
+            profileImage: p.profileImage ? `${API_BASE}/${p.profileImage}` : p.profileImage,
+            actionGif: p.actionGif ? `${API_BASE}/${p.actionGif}` : p.actionGif
+        }));
         filteredPlayers = [...players];
         renderTeamTags();
         renderCards();
