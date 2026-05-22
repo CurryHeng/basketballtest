@@ -347,9 +347,10 @@ function updateTeamTagsUI() {
 
 function filterPlayers() {
     filteredPlayers = players.filter(player => {
-        const matchesSearch = searchQuery === '' || 
+        const matchesSearch = searchQuery === '' ||
             player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (player.nickname && player.nickname.toLowerCase().includes(searchQuery.toLowerCase()));
+            (player.nickname && player.nickname.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (player.nameCn && player.nameCn.toLowerCase().includes(searchQuery.toLowerCase()));
         
         const matchesTeam = selectedTeam === '全部' || player.teamAbbr === selectedTeam;
         

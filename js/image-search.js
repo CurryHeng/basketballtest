@@ -109,9 +109,16 @@ class ImageSearcher {
         return this.players
             .filter(p => {
                 const name = p.name.toLowerCase();
+                const nameCn = (p.nameCn || '').toLowerCase();
+                const nickname = (p.nickname || '').toLowerCase();
                 const team = (p.teamAbbr + ' ' + (p.team || '')).toLowerCase();
-                // 任一关键词匹配名字或球队即可
-                return keywords.some(w => name.includes(w) || team.includes(w));
+                // 任一关键词匹配英文名、中文名、昵称或球队即可
+                return keywords.some(w =>
+                    name.includes(w) ||
+                    nameCn.includes(w) ||
+                    nickname.includes(w) ||
+                    team.includes(w)
+                );
             })
             .map(p => ({
                 id: `local_${p.id}`,

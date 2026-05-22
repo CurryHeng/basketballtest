@@ -11,7 +11,8 @@
     "honors": "2x MVP, 4x NBA Champion, 1x Finals MVP, 10x All-Star",
     "profileImage": "images/curry_profile.jpg",
     "actionGif": "gifs/curry_shoot.gif",
-    "actionDescription": "招牌超远距离三分投篮，改变篮球时代的神射手"
+    "actionDescription": "招牌超远距离三分投篮，改变篮球时代的神射手",
+    "nameCn": "斯蒂芬·库里"
   },
   {
     "id": 2,
@@ -25,7 +26,8 @@
     "honors": "4x MVP, 4x NBA Champion, 4x Finals MVP, 20x All-Star",
     "profileImage": "images/lebron_profile.jpg",
     "actionGif": "gifs/lebron_dunk.gif",
-    "actionDescription": "霸道坦克式突破暴扣，全能战士的终极武器"
+    "actionDescription": "霸道坦克式突破暴扣，全能战士的终极武器",
+    "nameCn": "勒布朗·詹姆斯"
   },
   {
     "id": 3,
@@ -39,7 +41,8 @@
     "honors": "1x MVP, 2x NBA Champion, 2x Finals MVP, 14x All-Star",
     "profileImage": "images/durant_profile.jpg",
     "actionGif": "gifs/durant_shoot.gif",
-    "actionDescription": "无解中距离干拔跳投，死神镰刀挥舞瞬间"
+    "actionDescription": "无解中距离干拔跳投，死神镰刀挥舞瞬间",
+    "nameCn": "凯文·杜兰特"
   },
   {
     "id": 4,
@@ -53,7 +56,8 @@
     "honors": "2x MVP, 1x NBA Champion, 1x Finals MVP, 8x All-Star",
     "profileImage": "images/giannis_profile.jpg",
     "actionGif": "gifs/giannis_dunk.gif",
-    "actionDescription": "希腊怪兽欧洲步暴扣，禁区霸主的毁灭冲击"
+    "actionDescription": "希腊怪兽欧洲步暴扣，禁区霸主的毁灭冲击",
+    "nameCn": "扬尼斯·阿德托昆博"
   },
   {
     "id": 5,
@@ -67,7 +71,8 @@
     "honors": "5x All-Star, 4x All-NBA First Team, Rookie of the Year",
     "profileImage": "images/luka_profile.jpg",
     "actionGif": "gifs/luka_stepback.gif",
-    "actionDescription": "神奇后撤步三分，斯洛文尼亚天才的魔法时刻"
+    "actionDescription": "神奇后撤步三分，斯洛文尼亚天才的魔法时刻",
+    "nameCn": "卢卡·东契奇"
   },
   {
     "id": 6,
@@ -81,7 +86,8 @@
     "honors": "1x MVP, 7x All-Star, 3x All-Defensive First Team",
     "profileImage": "images/joel_embiid_profile.jpg",
     "actionGif": "gifs/joel_embiid_action.jpg",
-    "actionDescription": "梦幻脚步内线进攻，喀麦隆大帝的禁区统治"
+    "actionDescription": "梦幻脚步内线进攻，喀麦隆大帝的禁区统治",
+    "nameCn": "乔尔·恩比德"
   },
   {
     "id": 7,
@@ -95,7 +101,8 @@
     "honors": "3x MVP, 1x NBA Champion, 1x Finals MVP, 6x All-Star",
     "profileImage": "images/nikola_jokic_profile.jpg",
     "actionGif": "gifs/nikola_jokic_action.jpg",
-    "actionDescription": "鬼魅不看人传球，塞尔维亚天才的中锋魔术"
+    "actionDescription": "鬼魅不看人传球，塞尔维亚天才的中锋魔术",
+    "nameCn": "尼古拉·约基奇"
   },
   {
     "id": 8,
@@ -109,7 +116,8 @@
     "honors": "1x NBA Champion, 5x All-Star, 4x All-NBA",
     "profileImage": "images/jayson_tatum_profile.jpg",
     "actionGif": "gifs/jayson_tatum_action.jpg",
-    "actionDescription": "丝滑后撤步中投，绿军新王的得分盛宴"
+    "actionDescription": "丝滑后撤步中投，绿军新王的得分盛宴",
+    "nameCn": "杰森·塔图姆"
   },
   {
     "id": 9,
@@ -123,7 +131,8 @@
     "honors": "1x NBA Champion, 10x All-Star, 4x All-Defensive First Team",
     "profileImage": "images/anthony_davis_profile.jpg",
     "actionGif": "gifs/anthony_davis_action.jpg",
-    "actionDescription": "遮天蔽日大火锅，浓眉哥的防守禁区"
+    "actionDescription": "遮天蔽日大火锅，浓眉哥的防守禁区",
+    "nameCn": "安东尼·戴维斯"
   },
   {
     "id": 10,
@@ -137,7 +146,8 @@
     "honors": "2x NBA Champion, 2x Finals MVP, 6x All-Star, 2x DPOY",
     "profileImage": "images/kawhi_leonard_profile.jpg",
     "actionGif": "gifs/kawhi_leonard_action.jpg",
-    "actionDescription": "机器人般精准中投，沉默杀手的致命一击"
+    "actionDescription": "机器人般精准中投，沉默杀手的致命一击",
+    "nameCn": "科怀·伦纳德"
   },
   {
     "id": 11,
@@ -151,7 +161,8 @@
     "honors": "8x All-Star, NBA 75th Anniversary Team",
     "profileImage": "images/damian_lillard_profile.jpg",
     "actionGif": "gifs/damian_lillard_action.jpg",
-    "actionDescription": "Logo超远三分绝杀，利拉德时间的致命时刻"
+    "actionDescription": "Logo超远三分绝杀，利拉德时间的致命时刻",
+    "nameCn": "达米安·利拉德"
   },
   {
     "id": 12,
@@ -165,7 +176,8 @@
     "honors": "2x All-Star, 2x All-NBA First Team",
     "profileImage": "images/shai_gilgeous-alexander_profile.jpg",
     "actionGif": "gifs/shai_gilgeous_alexander_action.jpg",
-    "actionDescription": "蛇形突破撕裂防线，加拿大新星崛起之路"
+    "actionDescription": "蛇形突破撕裂防线，加拿大新星崛起之路",
+    "nameCn": "谢伊·吉尔杰斯-亚历山大"
   },
   {
     "id": 13,
@@ -179,7 +191,8 @@
     "honors": "2x All-Star, Most Improved Player Candidate",
     "profileImage": "images/anthony_edwards_profile.jpg",
     "actionGif": "gifs/anthony_edwards_action.jpg",
-    "actionDescription": "暴力美学扣篮，新生代飞人的震撼表演"
+    "actionDescription": "暴力美学扣篮，新生代飞人的震撼表演",
+    "nameCn": "安东尼·爱德华兹"
   },
   {
     "id": 14,
@@ -193,7 +206,8 @@
     "honors": "1x All-Star, 1x All-NBA Second Team",
     "profileImage": "images/jalen_brunson_profile.jpg",
     "actionGif": "gifs/jalen_brunson_action.jpg",
-    "actionDescription": "关键时刻大心脏，纽约新王的领袖气质"
+    "actionDescription": "关键时刻大心脏，纽约新王的领袖气质",
+    "nameCn": "杰伦·布伦森"
   },
   {
     "id": 15,
@@ -207,7 +221,8 @@
     "honors": "4x All-Star, 70-Point Game Record",
     "profileImage": "images/devin_booker_profile.jpg",
     "actionGif": "gifs/devin_booker_action.jpg",
-    "actionDescription": "丝滑中距离投篮，太阳神射手的得分盛宴"
+    "actionDescription": "丝滑中距离投篮，太阳神射手的得分盛宴",
+    "nameCn": "德文·布克"
   },
   {
     "id": 16,
@@ -221,7 +236,8 @@
     "honors": "6x All-Star, 5x All-Defensive, 2x Finals Appearance",
     "profileImage": "images/jimmy_butler_profile.jpg",
     "actionGif": "gifs/jimmy_butler_action.jpg",
-    "actionDescription": "季后赛模式觉醒，硬汉 Butler 的关键时刻"
+    "actionDescription": "季后赛模式觉醒，硬汉 Butler 的关键时刻",
+    "nameCn": "吉米·巴特勒"
   },
   {
     "id": 17,
@@ -235,7 +251,8 @@
     "honors": "3x All-Star, 1x All-NBA, Finals Appearance",
     "profileImage": "images/trae_young_profile.jpg",
     "actionGif": "gifs/trae_young_action.jpg",
-    "actionDescription": "超远三分加抛投，冰吹羊的得分武器库"
+    "actionDescription": "超远三分加抛投，冰吹羊的得分武器库",
+    "nameCn": "特雷·杨"
   },
   {
     "id": 18,
@@ -249,7 +266,8 @@
     "honors": "1x NBA Champion, 8x All-Star, 50-40-90 Club",
     "profileImage": "images/kyrie_irving_profile.jpg",
     "actionGif": "gifs/kyrie_irving_action.jpg",
-    "actionDescription": "史诗级运球过人，德鲁大叔的街球艺术"
+    "actionDescription": "史诗级运球过人，德鲁大叔的街球艺术",
+    "nameCn": "凯里·欧文"
   },
   {
     "id": 19,
@@ -263,7 +281,8 @@
     "honors": "3x All-Star, 5x All-Defensive, 2x Finals Appearance",
     "profileImage": "images/bam_adebayo_profile.jpg",
     "actionGif": "gifs/bam_adebayo_action.jpg",
-    "actionDescription": "全能防守大闸，热火铁壁的禁区守护"
+    "actionDescription": "全能防守大闸，热火铁壁的禁区守护",
+    "nameCn": "巴姆·阿德巴约"
   },
   {
     "id": 20,
@@ -277,7 +296,8 @@
     "honors": "4x NBA Champion, 5x All-Star, Single-Game 14 Threes Record",
     "profileImage": "images/klay_thompson_profile.jpg",
     "actionGif": "images/klay_thompson_profile.jpg",
-    "actionDescription": "接球就投三分雨，水花兄弟的经典时刻"
+    "actionDescription": "接球就投三分雨，水花兄弟的经典时刻",
+    "nameCn": "克莱·汤普森"
   },
   {
     "id": 21,
@@ -291,7 +311,8 @@
     "honors": "Rookie of the Year, Blocks Leader, All-Rookie First Team",
     "profileImage": "images/victor_wembanyama_profile.jpg",
     "actionGif": "images/victor_wembanyama_profile.jpg",
-    "actionDescription": "外星人般的全能身手，法国独角兽的惊艳首秀"
+    "actionDescription": "外星人般的全能身手，法国独角兽的惊艳首秀",
+    "nameCn": "维克托·文班亚马"
   },
   {
     "id": 22,
@@ -305,7 +326,8 @@
     "honors": "1x All-Star, 1x All-NBA Third Team, Clutch Player of the Year",
     "profileImage": "images/deaaron_fox_profile.jpg",
     "actionGif": "images/deaaron_fox_profile.jpg",
-    "actionDescription": "闪电突破撕裂防线，联盟最快的后卫冲刺"
+    "actionDescription": "闪电突破撕裂防线，联盟最快的后卫冲刺",
+    "nameCn": "达龙·福克斯"
   },
   {
     "id": 23,
@@ -319,7 +341,8 @@
     "honors": "1x NBA Champion, 2x All-Star, Most Improved Player",
     "profileImage": "images/pascal_siakam_profile.jpg",
     "actionGif": "images/pascal_siakam_profile.jpg",
-    "actionDescription": "丝滑转身突破，喀麦隆前锋的全面进化"
+    "actionDescription": "丝滑转身突破，喀麦隆前锋的全面进化",
+    "nameCn": "帕斯卡尔·西亚卡姆"
   },
   {
     "id": 24,
@@ -333,7 +356,8 @@
     "honors": "1x All-Star, All-Rookie First Team",
     "profileImage": "images/zion_williamson_profile.jpg",
     "actionGif": "images/zion_williamson_profile.jpg",
-    "actionDescription": "暴力美学隔人暴扣，胖虎的重型坦克冲击"
+    "actionDescription": "暴力美学隔人暴扣，胖虎的重型坦克冲击",
+    "nameCn": "锡安·威廉姆森"
   },
   {
     "id": 25,
@@ -347,7 +371,8 @@
     "honors": "2x All-Star, Rookie of the Year, Most Improved Player",
     "profileImage": "images/ja_morant_profile.jpg",
     "actionGif": "images/ja_morant_profile.jpg",
-    "actionDescription": "炸裂弹跳暴扣，灰熊少主的空中漫步"
+    "actionDescription": "炸裂弹跳暴扣，灰熊少主的空中漫步",
+    "nameCn": "贾·莫兰特"
   },
   {
     "id": 26,
@@ -361,7 +386,8 @@
     "honors": "1x MVP, 10x All-Star, 3x Scoring Champion, 2x Assist Leader",
     "profileImage": "images/james_harden_profile.jpg",
     "actionGif": "images/james_harden_profile.jpg",
-    "actionDescription": "后撤步三分大师，大胡子的得分艺术"
+    "actionDescription": "后撤步三分大师，大胡子的得分艺术",
+    "nameCn": "詹姆斯·哈登"
   },
   {
     "id": 27,
@@ -375,7 +401,8 @@
     "honors": "12x All-Star, 11x All-NBA, 9x All-Defensive, 5x Assist Leader",
     "profileImage": "images/chris_paul_profile.jpg",
     "actionGif": "images/chris_paul_profile.jpg",
-    "actionDescription": "控场大师传球艺术，CP3的球队大脑"
+    "actionDescription": "控场大师传球艺术，CP3的球队大脑",
+    "nameCn": "克里斯·保罗"
   },
   {
     "id": 28,
@@ -389,7 +416,8 @@
     "honors": "3x All-Star, 2x All-NBA Third Team",
     "profileImage": "images/bradley_beal_profile.jpg",
     "actionGif": "images/bradley_beal_profile.jpg",
-    "actionDescription": "丝滑得分机器，比尔的全面进攻武器"
+    "actionDescription": "丝滑得分机器，比尔的全面进攻武器",
+    "nameCn": "布拉德利·比尔"
   },
   {
     "id": 29,
@@ -403,7 +431,8 @@
     "honors": "3x All-Star, 1x NBA Champion, 1x All-NBA",
     "profileImage": "images/jaylen_brown_profile.jpg",
     "actionGif": "images/jaylen_brown_profile.jpg",
-    "actionDescription": "暴力扣加强硬防守，绿军双探花之二"
+    "actionDescription": "暴力扣加强硬防守，绿军双探花之二",
+    "nameCn": "杰伦·布朗"
   },
   {
     "id": 30,
@@ -417,6 +446,37 @@
     "honors": "1x DPOY, 1x All-Star, 2x Blocks Leader",
     "profileImage": "images/jaren_jackson_jr_profile.jpg",
     "actionGif": "images/jaren_jackson_jr_profile.jpg",
-    "actionDescription": "护框加三分的空间内线，灰熊防守核心"
+    "actionDescription": "护框加三分的空间内线，灰熊防守核心",
+    "nameCn": "小贾伦·杰克逊"
+  },
+  {
+    "id": 31,
+    "name": "Michael Jordan",
+    "nickname": "篮球之神",
+    "nameCn": "迈克尔·乔丹",
+    "team": "Chicago Bulls",
+    "teamAbbr": "CHI",
+    "position": "Shooting Guard",
+    "height": "6'6\" (198 cm)",
+    "weight": "216 lbs (98 kg)",
+    "honors": "5x MVP, 6x NBA Champion, 6x Finals MVP, 14x All-Star, Hall of Fame",
+    "profileImage": "",
+    "actionGif": "",
+    "actionDescription": ""
+  },
+  {
+    "id": 32,
+    "name": "Kobe Bryant",
+    "nickname": "黑曼巴",
+    "nameCn": "科比·布莱恩特",
+    "team": "Los Angeles Lakers",
+    "teamAbbr": "LAL",
+    "position": "Shooting Guard",
+    "height": "6'6\" (198 cm)",
+    "weight": "212 lbs (96 kg)",
+    "honors": "1x MVP, 5x NBA Champion, 2x Finals MVP, 18x All-Star, Hall of Fame",
+    "profileImage": "",
+    "actionGif": "",
+    "actionDescription": ""
   }
 ]
