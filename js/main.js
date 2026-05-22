@@ -274,6 +274,7 @@ window.deleteAnalyze = deleteAnalyze;
 
 navBtns.forEach(btn => {
     btn.addEventListener('click', () => {
+        if (btn.dataset.external !== undefined) return;
         const page = btn.dataset.page;
         switchPage(page);
         navBtns.forEach(b => b.classList.remove('active'));
