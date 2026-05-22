@@ -348,7 +348,13 @@ function switchPage(page) {
         talentPage.classList.remove('hidden');
     } else if (page === 'rankings') {
         rankingsPage.classList.remove('hidden');
-        loadRankings();
+        // 根据当前激活的 tab 加载对应视图
+        const activeTab = document.querySelector('.rankings-tab.active');
+        if (activeTab && activeTab.dataset.view === 'lineup') {
+            loadLineup();
+        } else {
+            loadRankings();
+        }
     } else if (page === 'admin') {
         adminPage.classList.remove('hidden');
         loadAdminData();
@@ -606,7 +612,7 @@ async function loadRankings() {
     try {
         const response = await fetch(`${API_BASE}/api/rankings?limit=20`);
         const data = await response.json();
-        
+
         if (data.success && data.data.length > 0) {
             renderRankings(data.data);
         } else {
@@ -614,6 +620,42 @@ async function loadRankings() {
         }
     } catch (error) {
         rankingsList.innerHTML = '<div class="empty-state"><p class="empty-text">无法连接后端服务</p></div>';
+    }
+}
+
+async function loadLineup() {
+    const posNames = { PG: '控球后卫', SG: '得分后卫', SF: '小前锋', PF: '大前锋', C: '中锋' };
+    try {
+        const res = await fetch(`${API_BASE}/api/rankings/lineup`);
+        const data = await res.json();
+        if (!data.success || !data.data) return;
+
+        // 重置为空状态
+        for (const pos of ['PG', 'SG', 'SF', 'PF', 'C']) {
+            const el = document.getElementById(`lineup-${pos}`);
+            el.innerHTML = `
+                <div class="court-player-icon">🏀</div>
+                <div class="court-player-name">无数据</div>
+                <div class="court-player-score"></div>
+            `;
+            el.onclick = null;
+        }
+
+        data.data.forEach(item => {
+            const el = document.getElementById(`lineup-${item.position}`);
+            if (!el) return;
+            el.innerHTML = `
+                <div class="court-player-icon">⭐</div>
+                <div class="court-player-name">${item.nickname}</div>
+                <div class="court-player-score">${item.totalScore} 分 · ${posNames[item.position] || item.position}</div>
+            `;
+            el.onclick = () => {
+                const userId = item.userId;
+                loadUserDetail(userId);
+            };
+        });
+    } catch (e) {
+        console.error('加载阵容失败', e);
     }
 }
 
@@ -701,6 +743,24 @@ function showUserDetail(data) {
 document.getElementById('back-to-rankings').addEventListener('click', () => {
     document.getElementById('user-detail-page').classList.add('hidden');
     rankingsPage.classList.remove('hidden');
+});
+
+// ── 阵容 Tab 切换 ──
+document.querySelectorAll('.rankings-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.rankings-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const view = tab.dataset.view;
+        if (view === 'lineup') {
+            document.getElementById('rankings-list').classList.add('hidden');
+            document.getElementById('lineup-view').classList.remove('hidden');
+            loadLineup();
+        } else {
+            document.getElementById('rankings-list').classList.remove('hidden');
+            document.getElementById('lineup-view').classList.add('hidden');
+            loadRankings();
+        }
+    });
 });
 
 function init() {

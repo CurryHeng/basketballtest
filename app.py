@@ -23,6 +23,7 @@ from backend.database import (
     save_user_profile,
     save_talent_score,
     get_rankings,
+    get_lineup,
     get_user_history,
     get_all_users,
     get_user_detail,
@@ -149,6 +150,18 @@ def rankings():
     try:
         limit = request.args.get('limit', 10, type=int)
         data = get_rankings(limit)
+        return jsonify({
+            'success': True,
+            'data': data
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/rankings/lineup', methods=['GET'])
+def rankings_lineup():
+    """获取每个位置评分最高的用户组成阵容"""
+    try:
+        data = get_lineup()
         return jsonify({
             'success': True,
             'data': data

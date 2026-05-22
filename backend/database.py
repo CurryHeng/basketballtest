@@ -348,6 +348,56 @@ def get_rankings(limit=10):
     
     return rankings
 
+
+def get_lineup():
+    """获取每个位置评分最高的用户，组成一套阵容"""
+    conn = get_db()
+    cursor = conn.cursor()
+    positions = ['PG', 'SG', 'SF', 'PF', 'C']
+    lineup = []
+
+    for pos in positions:
+        cursor.execute("""
+            SELECT up.id, up.nickname, up.height, up.weight, up.position,
+                   r.total_score
+            FROM rankings r
+            JOIN user_profiles up ON r.user_id = up.id
+            WHERE up.position = ?
+            ORDER BY r.total_score DESC
+            LIMIT 1
+        """, (pos,))
+        row = cursor.fetchone()
+        if not row:
+            continue
+
+        # 获取该用户的匹配球星和详细评分
+        cursor.execute("""
+            SELECT matched_star, matched_star_active, scores, comments
+            FROM talent_scores
+            WHERE user_id = ?
+            ORDER BY created_at DESC
+            LIMIT 1
+        """, (row['id'],))
+        talent = cursor.fetchone()
+
+        entry = {
+            'userId': row['id'],
+            'nickname': row['nickname'],
+            'height': row['height'],
+            'weight': row['weight'],
+            'position': row['position'],
+            'totalScore': round(row['total_score'], 1),
+        }
+        if talent:
+            entry['matchedStar'] = talent['matched_star']
+            active = json.loads(talent['matched_star_active']) if talent['matched_star_active'] else {}
+            entry['matchedStarName'] = active.get('name', talent['matched_star'])
+        lineup.append(entry)
+
+    conn.close()
+    return lineup
+
+
 def get_user_detail(user_id):
     """获取用户完整详情（用于排行榜点击）"""
     conn = get_db()

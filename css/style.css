@@ -1269,3 +1269,173 @@ body {
 #back-from-admin {
     margin-top: 2rem;
 }
+
+/* ── 排名页 Tab ──────────────────────────────────── */
+
+.rankings-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.75rem;
+}
+
+.rankings-tab {
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rankings-tab:hover {
+    color: var(--text-primary);
+    background: var(--bg-card);
+}
+
+.rankings-tab.active {
+    color: var(--primary);
+    background: rgba(255, 107, 0, 0.1);
+}
+
+/* ── 篮球场阵容 ──────────────────────────────────── */
+
+.lineup-view {
+    margin-top: 1rem;
+}
+
+.court {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    aspect-ratio: 5 / 7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.court-floor {
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    background:
+        repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.1) 40px, rgba(255,255,255,0.1) 41px),
+        repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.1) 40px, rgba(255,255,white,0.1) 41px);
+    border-radius: 14px;
+    pointer-events: none;
+}
+
+.court-pos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    z-index: 1;
+}
+
+.court-pos-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255,255,255,0.3);
+}
+
+.court-player {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    min-width: 100px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.court-player:hover {
+    border-color: var(--primary);
+    transform: scale(1.05);
+}
+
+.court-player-icon {
+    font-size: 1.25rem;
+    margin-bottom: 0.15rem;
+}
+
+.court-player-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.court-player-score {
+    font-size: 0.7rem;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* 5个位置的布局 */
+.pg-pos { order: 1; }
+.sg-pos { order: 2; }
+.sf-pos { order: 3; }
+.pf-pos { order: 4; }
+.c-pos { order: 5; }
+
+@media (min-width: 500px) {
+    .court {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        gap: 0.5rem;
+        align-items: center;
+        justify-items: center;
+    }
+    .pg-pos {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+    .sg-pos {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    .sf-pos {
+        grid-column: 2;
+        grid-row: 2;
+    }
+    .pf-pos {
+        grid-column: 1;
+        grid-row: 3;
+    }
+    .c-pos {
+        grid-column: 2;
+        grid-row: 3;
+    }
+}
+
+@media (max-width: 499px) {
+    .court-pos {
+        flex-direction: row;
+        width: 100%;
+        max-width: 280px;
+        justify-content: space-between;
+    }
+    .court-player {
+        min-width: 150px;
+    }
+}
