@@ -21,8 +21,13 @@ class ImageSearcher {
         }
         // 加载本地球员数据
         try {
-            const r = await fetch('data/players.json');
-            this.players = await r.json();
+            const r = await fetch(`${API_BASE}/api/players`);
+            const result = await r.json();
+            if (result.success) {
+                this.players = result.data;
+            } else {
+                throw new Error(result.error || '数据加载失败');
+            }
         } catch (e) {
             console.warn('加载本地球员数据失败', e);
         }

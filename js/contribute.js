@@ -20,8 +20,13 @@ class ContributionManager {
     
     async loadPlayers() {
         try {
-            const response = await fetch('data/players.json');
-            this.players = await response.json();
+            const response = await fetch(`${API_BASE}/api/players`);
+            const result = await response.json();
+            if (result.success) {
+                this.players = result.data;
+            } else {
+                throw new Error(result.error || '数据加载失败');
+            }
         } catch (error) {
             console.error('加载球员数据失败:', error);
             this.players = [];

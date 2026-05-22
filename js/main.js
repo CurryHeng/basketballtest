@@ -357,9 +357,11 @@ function switchPage(page) {
 
 async function loadPlayers() {
     try {
-        const response = await fetch('data/players.json?_=' + Date.now());
+        const response = await fetch(`${API_BASE}/api/players`);
         if (!response.ok) throw new Error('无法加载数据');
-        players = await response.json();
+        const result = await response.json();
+        if (!result.success) throw new Error('数据加载失败');
+        players = result.data;
         filteredPlayers = [...players];
         renderTeamTags();
         renderCards();

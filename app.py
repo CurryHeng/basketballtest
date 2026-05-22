@@ -326,6 +326,16 @@ def get_templates():
         'fun': fun
     })
 
+@app.route('/api/players', methods=['GET'])
+def api_players():
+    """返回球星数据（与 approve 操作同源，确保数据一致）"""
+    players_path = os.path.join(ROOT_DIR, 'data', 'players.json')
+    if os.path.exists(players_path):
+        with open(players_path, 'r', encoding='utf-8') as f:
+            players = json.load(f)
+        return jsonify({'success': True, 'data': players})
+    return jsonify({'error': '数据文件不存在'}), 404
+
 # ── 认证接口 ──────────────────────────────────────────
 
 from itsdangerous import BadSignature, SignatureExpired
