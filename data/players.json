@@ -460,9 +460,9 @@
     "height": "6'6\" (198 cm)",
     "weight": "216 lbs (98 kg)",
     "honors": "5x MVP, 6x NBA Champion, 6x Finals MVP, 14x All-Star, Hall of Fame",
-    "profileImage": "",
-    "actionGif": "",
-    "actionDescription": ""
+    "profileImage": "images/michael_jordan_profile.jpg",
+    "actionGif": "gifs/michael_jordan_action.jpg",
+    "actionDescription": "飞人空中漫步，篮球史上最伟大的球员"
   },
   {
     "id": 32,
@@ -475,8 +475,8 @@
     "height": "6'6\" (198 cm)",
     "weight": "212 lbs (96 kg)",
     "honors": "1x MVP, 5x NBA Champion, 2x Finals MVP, 18x All-Star, Hall of Fame",
-    "profileImage": "",
-    "actionGif": "",
-    "actionDescription": ""
+    "profileImage": "images/kobe_bryant_profile.jpg",
+    "actionGif": "gifs/kobe_bryant_action.jpg",
+    "actionDescription": "黑曼巴后仰跳投，永恒的洛杉矶传奇"
   }
 ]
