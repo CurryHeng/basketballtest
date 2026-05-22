@@ -258,7 +258,7 @@ class ContributionManager {
         const title = encodeURIComponent(`贡献图片：${player.name} - ${typeName}`);
         const body = encodeURIComponent(`## 图片贡献\n\n**球星：** ${player.name}\n**球队：** ${player.team}\n**图片类型：** ${typeName}\n**图片URL：** ${imageUrl}\n\n![预览](${imageUrl})`);
         
-        const issueUrl = `https://github.com/CurryHeng/basketball/issues/new?title=${title}&body=${body}`;
+        const issueUrl = `https://github.com/CurryHeng/basketballtest/issues/new?title=${title}&body=${body}`;
         
         window.open(issueUrl, '_blank');
     }
