@@ -586,6 +586,11 @@ body {
     color: var(--text-primary);
 }
 
+.nav-link-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
 .talent-container, .rankings-container {
     max-width: 800px;
     margin: 0 auto;
