@@ -38,5 +38,9 @@ Thumbs.db
 *.tmp
 *.temp
 
+# 用户上传的图片
+uploads/*
+!uploads/.gitkeep
+
 # PowerShell 脚本（可选）
 # fetch_nba.ps1

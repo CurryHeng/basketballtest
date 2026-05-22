@@ -106,6 +106,21 @@ def init_db():
         )
     """)
 
+    # 图片上传记录表
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS image_uploads (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            player_name TEXT NOT NULL,
+            player_id INTEGER,
+            image_type TEXT NOT NULL,
+            file_path TEXT NOT NULL,
+            original_name TEXT,
+            uploaded_by INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (uploaded_by) REFERENCES users (id)
+        )
+    """)
+
     conn.commit()
     conn.close()
     print("数据库初始化完成")
@@ -442,3 +457,32 @@ def get_all_users():
         })
     
     return users
+
+# ── 图片上传 ──────────────────────────────────────────
+
+def save_image_upload(player_name, player_id, image_type, file_path, original_name, uploaded_by):
+    """保存图片上传记录"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO image_uploads (player_name, player_id, image_type, file_path, original_name, uploaded_by)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (player_name, player_id, image_type, file_path, original_name, uploaded_by))
+    upload_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return upload_id
+
+def get_player_images(player_name):
+    """查询某个球员的所有上传图片"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, player_name, image_type, file_path, original_name, created_at
+        FROM image_uploads
+        WHERE player_name = ?
+        ORDER BY created_at DESC
+    """, (player_name,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]

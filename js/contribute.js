@@ -162,6 +162,11 @@ class ContributionManager {
             document.getElementById('upload-btn').disabled = true;
         });
         
+        // 上传到服务器
+        document.getElementById('upload-btn').addEventListener('click', () => {
+            this.uploadToServer();
+        });
+
         // 提交URL
         document.getElementById('submit-url').addEventListener('click', () => {
             this.submitUrl();
@@ -302,6 +307,79 @@ class ContributionManager {
         });
     }
     
+    async uploadToServer() {
+        const playerId = document.getElementById('player-select-upload').value;
+        const imageType = document.getElementById('image-type-upload').value;
+        const uploadBtn = document.getElementById('upload-btn');
+
+        if (!playerId || !this.selectedFile) {
+            alert('请先选择球星和图片文件');
+            return;
+        }
+
+        const player = this.players.find(p => p.id === parseInt(playerId));
+        if (!player) {
+            alert('请选择有效球星');
+            return;
+        }
+
+        // 检查是否已登录
+        const token = localStorage.getItem('basketball_auth_token');
+        if (!token) {
+            alert('请先登录后再上传');
+            return;
+        }
+
+        // 构建 FormData
+        const formData = new FormData();
+        formData.append('file', this.selectedFile);
+        formData.append('playerName', player.name);
+        formData.append('playerId', player.id);
+        formData.append('imageType', imageType);
+
+        // 上传状态
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = '上传中...';
+
+        try {
+            const r = await fetch(`${API_BASE}/api/images/upload`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const data = await r.json();
+
+            if (data.success) {
+                this.showModal('✅ 上传成功', `
+                    <p>图片已上传到服务器！</p>
+                    <p style="margin-top:1rem;"><strong>URL：</strong></p>
+                    <textarea readonly>${data.url}</textarea>
+                    <p style="margin-top:1rem;color:var(--text-secondary);font-size:0.875rem;">
+                        该图片已保存在服务器，项目维护者可以看到。
+                    </p>
+                `);
+                // 重置文件选择状态
+                this.selectedFile = null;
+                document.getElementById('file-preview').classList.remove('active');
+                document.getElementById('upload-btn').disabled = true;
+            } else {
+                this.showModal('上传失败', `
+                    <p style="color:#f44336;">${data.error || '未知错误'}</p>
+                `);
+            }
+        } catch (e) {
+            this.showModal('上传失败', `
+                <p style="color:#f44336;">网络错误：${e.message}</p>
+            `);
+        } finally {
+            uploadBtn.disabled = false;
+            uploadBtn.textContent = '上传到服务器';
+        }
+    }
+
     showModal(title, body) {
         document.getElementById('modal-title').textContent = title;
         document.getElementById('modal-body').innerHTML = body;

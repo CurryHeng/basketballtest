@@ -8,6 +8,9 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sys
 import os
+import re
+import time
+from werkzeug.utils import secure_filename
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -31,6 +34,8 @@ from backend.database import (
     delete_user_by_id,
     get_all_analyzes,
     delete_analyze_by_id,
+    save_image_upload,
+    get_player_images,
 )
 from backend.talent_analyzer import analyze_talent
 
@@ -43,6 +48,15 @@ CORS(app, resources={
         "allow_headers": ["Content-Type", "Authorization"]
     }
 })
+
+# 上传配置
+UPLOAD_FOLDER = os.path.join(ROOT_DIR, 'uploads')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # WSGI 部署下自动初始化数据库（__main__ 分支只在 python app.py 时执行）
 init_db()
@@ -191,6 +205,80 @@ def video_upload():
         'message': '视频上传功能开发中，敬请期待！',
         'hint': '此接口预留用于AI动作识别'
     })
+
+@app.route('/api/images/upload', methods=['POST', 'OPTIONS'])
+def image_upload():
+    """
+    上传球员图片
+    multipart/form-data:
+        file - 图片文件
+        playerName - 球员名
+        playerId - 球员ID
+        imageType - profile 或 action
+    """
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'})
+
+    user_id = require_auth()
+    if not user_id:
+        return jsonify({'error': '请先登录'}), 401
+
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': '请选择文件'}), 400
+
+        file = request.files['file']
+        player_name = (request.form.get('playerName') or '').strip()
+        player_id = request.form.get('playerId', type=int)
+        image_type = request.form.get('imageType', 'profile')
+
+        if not player_name:
+            return jsonify({'error': '请指定球员名称'}), 400
+
+        if image_type not in ('profile', 'action'):
+            return jsonify({'error': '图片类型必须是 profile 或 action'}), 400
+
+        if not file.filename:
+            return jsonify({'error': '请选择文件'}), 400
+
+        if not allowed_file(file.filename):
+            return jsonify({'error': '不支持的文件格式，仅支持 jpg/png/gif/webp'}), 400
+
+        # 生成安全的文件名
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        safe_name = re.sub(r'[^\w一-鿿\-]', '_', player_name.lower().replace(' ', '_'))
+        filename = f"{safe_name}_{image_type}_{int(time.time())}.{ext}"
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+
+        # 记录到数据库
+        file_url = f"/uploads/{filename}"
+        save_image_upload(player_name, player_id, image_type, file_url, file.filename, user_id)
+
+        return jsonify({
+            'success': True,
+            'message': '上传成功',
+            'url': file_url,
+            'filename': filename
+        })
+
+    except Exception as e:
+        return jsonify({'error': f'上传失败: {str(e)}'}), 500
+
+
+@app.route('/api/images/<player_name>', methods=['GET'])
+def get_images(player_name):
+    """查询某个球员的所有已上传图片"""
+    try:
+        images = get_player_images(player_name)
+        return jsonify({
+            'success': True,
+            'images': images,
+            'count': len(images)
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/duel/compare', methods=['POST', 'OPTIONS'])
 def duel_compare():
@@ -386,6 +474,8 @@ def admin_delete_analyze(analyze_id):
         return resp
     delete_analyze_by_id(analyze_id)
     return jsonify({'success': True})
+
+if __name__ == '__main__':
     print("=" * 50)
     print("篮球天赋分析后端启动")
     print("=" * 50)
