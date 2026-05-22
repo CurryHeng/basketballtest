@@ -104,12 +104,15 @@ class ImageSearcher {
 
     searchLocal(query) {
         const kw = query.toLowerCase();
+        // 拆分成单个关键词，去掉 "basketball" "nba" 等通用词
+        const keywords = kw.split(/\s+/).filter(w => w.length > 1 && w !== 'basketball' && w !== 'nba');
         return this.players
-            .filter(p =>
-                p.name.toLowerCase().includes(kw) ||
-                (p.teamAbbr && p.teamAbbr.toLowerCase().includes(kw)) ||
-                (p.team && p.team.toLowerCase().includes(kw))
-            )
+            .filter(p => {
+                const name = p.name.toLowerCase();
+                const team = (p.teamAbbr + ' ' + (p.team || '')).toLowerCase();
+                // 任一关键词匹配名字或球队即可
+                return keywords.some(w => name.includes(w) || team.includes(w));
+            })
             .map(p => ({
                 id: `local_${p.id}`,
                 url: p.profileImage,
