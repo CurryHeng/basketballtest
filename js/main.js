@@ -265,6 +265,8 @@ async function approveUpload(uploadId) {
     if (data.success) {
         alert('已采用！' + (data.path ? ' 图片路径：' + data.path : ''));
         loadAdminUploads();
+        // 刷新球员缓存，让首页卡片立即显示新图片
+        loadPlayers();
     } else {
         alert('操作失败：' + (data.error || '未知错误'));
     }
@@ -355,7 +357,7 @@ function switchPage(page) {
 
 async function loadPlayers() {
     try {
-        const response = await fetch('data/players.json');
+        const response = await fetch('data/players.json?_=' + Date.now());
         if (!response.ok) throw new Error('无法加载数据');
         players = await response.json();
         filteredPlayers = [...players];
