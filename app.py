@@ -594,7 +594,7 @@ def admin_delete_analyze(analyze_id):
     delete_analyze_by_id(analyze_id)
     return jsonify({'success': True})
 
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 @app.route('/api/reset-admin', methods=['GET'])
 def reset_admin():
@@ -606,6 +606,23 @@ def reset_admin():
     conn.commit()
     conn.close()
     return '管理员密码已重置为 admin123，请关闭此页面后重新登录'
+
+@app.route('/api/debug-user', methods=['GET'])
+def debug_user():
+    """临时接口：检查用户状态"""
+    import sqlite3
+    conn = sqlite3.connect(os.path.join(ROOT_DIR, 'data', 'basketball.db'))
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    c.execute('SELECT id, username, email, is_admin, password_hash FROM users WHERE username = ?', ('CurryHeng',))
+    r = c.fetchone()
+    if not r:
+        conn.close()
+        return f'用户 CurryHeng 不存在'
+    test = check_password_hash(r['password_hash'], 'admin123')
+    result = f'ID: {r["id"]}, 用户名: {r["username"]}, 邮箱: {r["email"]}, 管理员: {bool(r["is_admin"])}, 密码验证: {"通过" if test else "失败"}'
+    conn.close()
+    return result
 
 if __name__ == '__main__':
     print("=" * 50)
