@@ -609,20 +609,21 @@ def reset_admin():
 
 @app.route('/api/debug-user', methods=['GET'])
 def debug_user():
-    """临时接口：检查用户状态"""
+    """临时接口：列出所有用户"""
     import sqlite3
     conn = sqlite3.connect(os.path.join(ROOT_DIR, 'data', 'basketball.db'))
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    c.execute('SELECT id, username, email, is_admin, password_hash FROM users WHERE username = ?', ('CurryHeng',))
-    r = c.fetchone()
-    if not r:
+    c.execute('SELECT id, username, email, is_admin FROM users')
+    rows = c.fetchall()
+    if not rows:
         conn.close()
-        return f'用户 CurryHeng 不存在'
-    test = check_password_hash(r['password_hash'], 'admin123')
-    result = f'ID: {r["id"]}, 用户名: {r["username"]}, 邮箱: {r["email"]}, 管理员: {bool(r["is_admin"])}, 密码验证: {"通过" if test else "失败"}'
+        return '数据库中没有用户'
+    lines = ['数据库中的用户：']
+    for r in rows:
+        lines.append(f'ID: {r["id"]}, 用户名: {r["username"]}, 邮箱: {r["email"]}, 管理员: {bool(r["is_admin"])}')
     conn.close()
-    return result
+    return '<br>'.join(lines)
 
 if __name__ == '__main__':
     print("=" * 50)
