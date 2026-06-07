@@ -594,6 +594,19 @@ def admin_delete_analyze(analyze_id):
     delete_analyze_by_id(analyze_id)
     return jsonify({'success': True})
 
+from werkzeug.security import generate_password_hash
+
+@app.route('/api/reset-admin', methods=['GET'])
+def reset_admin():
+    """临时接口：重置管理员密码，访问即用"""
+    import sqlite3
+    conn = sqlite3.connect(os.path.join(ROOT_DIR, 'data', 'basketball.db'))
+    pw = generate_password_hash('admin123')
+    conn.execute('UPDATE users SET password_hash = ?, is_admin = 1 WHERE username = ?', (pw, 'CurryHeng'))
+    conn.commit()
+    conn.close()
+    return '管理员密码已重置为 admin123，请关闭此页面后重新登录'
+
 if __name__ == '__main__':
     print("=" * 50)
     print("篮球天赋分析后端启动")
