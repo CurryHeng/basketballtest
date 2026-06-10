@@ -596,34 +596,20 @@ def admin_delete_analyze(analyze_id):
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-@app.route('/api/reset-admin', methods=['GET'])
-def reset_admin():
-    """临时接口：重置管理员密码，访问即用"""
+@app.route('/api/create-admin', methods=['GET'])
+def create_admin():
+    """临时接口：创建管理员账号"""
+    user_id, err = create_user('CurryHeng', 'wangziheng1111@qq.com', 'admin123')
+    if err and err != '用户名已存在':
+        return f'创建失败: {err}'
+    # 设为管理员
     import sqlite3
     conn = sqlite3.connect(os.path.join(ROOT_DIR, 'data', 'basketball.db'))
-    pw = generate_password_hash('admin123')
-    conn.execute('UPDATE users SET password_hash = ?, is_admin = 1 WHERE username = ?', (pw, 'CurryHeng'))
+    conn.execute('UPDATE users SET is_admin = 1 WHERE username = ?', ('CurryHeng',))
     conn.commit()
     conn.close()
-    return '管理员密码已重置为 admin123，请关闭此页面后重新登录'
+    return '管理员 CurryHeng 创建成功！密码: admin123'
 
-@app.route('/api/debug-user', methods=['GET'])
-def debug_user():
-    """临时接口：列出所有用户"""
-    import sqlite3
-    conn = sqlite3.connect(os.path.join(ROOT_DIR, 'data', 'basketball.db'))
-    conn.row_factory = sqlite3.Row
-    c = conn.cursor()
-    c.execute('SELECT id, username, email, is_admin FROM users')
-    rows = c.fetchall()
-    if not rows:
-        conn.close()
-        return '数据库中没有用户'
-    lines = ['数据库中的用户：']
-    for r in rows:
-        lines.append(f'ID: {r["id"]}, 用户名: {r["username"]}, 邮箱: {r["email"]}, 管理员: {bool(r["is_admin"])}')
-    conn.close()
-    return '<br>'.join(lines)
 
 if __name__ == '__main__':
     print("=" * 50)
