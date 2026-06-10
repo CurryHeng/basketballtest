@@ -273,6 +273,7 @@
 
             <div class="admin-tabs">
                 <button class="admin-tab active" data-tab="admin-users">用户管理</button>
+                <button class="admin-tab" data-tab="admin-submissions">球员申请</button>
                 <button class="admin-tab" data-tab="admin-uploads">上传管理</button>
                 <button class="admin-tab" data-tab="admin-analyzes">分析记录</button>
             </div>
@@ -293,6 +294,28 @@
                             </tr>
                         </thead>
                         <tbody id="admin-users-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-submissions" class="admin-tab-content hidden">
+                <h3>用户提交的新球员</h3>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>英文名</th>
+                                <th>中文名</th>
+                                <th>球队</th>
+                                <th>位置</th>
+                                <th>提交者</th>
+                                <th>状态</th>
+                                <th>时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-submissions-tbody"></tbody>
                     </table>
                 </div>
             </div>

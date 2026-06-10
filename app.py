@@ -41,6 +41,11 @@ from backend.database import (
     get_player_images,
     get_all_uploads,
     delete_upload_by_id,
+    save_player_submission,
+    get_all_submissions,
+    approve_player_submission,
+    reject_player_submission,
+    delete_player_submission,
 )
 from backend.talent_analyzer import analyze_talent
 
@@ -594,22 +599,90 @@ def admin_delete_analyze(analyze_id):
     delete_analyze_by_id(analyze_id)
     return jsonify({'success': True})
 
-from werkzeug.security import generate_password_hash, check_password_hash
+# ── 球员提交 ──────────────────────────────────────────
 
-@app.route('/api/create-admin', methods=['GET'])
-def create_admin():
-    """临时接口：创建管理员账号"""
-    user_id, err = create_user('CurryHeng', 'wangziheng1111@qq.com', 'admin123')
-    if err and err != '用户名已存在':
-        return f'创建失败: {err}'
-    # 设为管理员
-    import sqlite3
-    conn = sqlite3.connect(os.path.join(ROOT_DIR, 'data', 'basketball.db'))
-    conn.execute('UPDATE users SET is_admin = 1 WHERE username = ?', ('CurryHeng',))
-    conn.commit()
-    conn.close()
-    return '管理员 CurryHeng 创建成功！密码: admin123'
+@app.route('/api/players/submit', methods=['POST', 'OPTIONS'])
+def player_submit():
+    """登录用户提交新球员信息"""
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'})
+    user_id = require_auth()
+    if not user_id:
+        return jsonify({'error': '请先登录'}), 401
+    try:
+        data = request.get_json()
+        if not data or not data.get('name'):
+            return jsonify({'error': '请填写球员名称'}), 400
+        sub_id = save_player_submission(data, user_id)
+        return jsonify({'success': True, 'submissionId': sub_id, 'message': '提交成功，等待管理员审核'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
+@app.route('/api/admin/player-submissions', methods=['GET'])
+def admin_player_submissions():
+    """管理员查看所有球员提交"""
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    subs = get_all_submissions()
+    return jsonify({'success': True, 'submissions': subs})
+
+@app.route('/api/admin/player-submissions/<int:sub_id>/approve', methods=['POST'])
+def admin_approve_player(sub_id):
+    """管理员审核通过：写入 players.json"""
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    try:
+        sub = approve_player_submission(sub_id)
+        if not sub:
+            return jsonify({'error': '记录不存在'}), 404
+
+        players_path = os.path.join(ROOT_DIR, 'data', 'players.json')
+        with open(players_path, 'r', encoding='utf-8') as f:
+            players = json.load(f)
+
+        max_id = max(p['id'] for p in players) if players else 0
+        new_player = {
+            'id': max_id + 1,
+            'name': sub['name'],
+            'nameCn': sub['name_cn'] or '',
+            'nickname': sub['nickname'] or '',
+            'team': sub['team'] or '',
+            'teamAbbr': sub['team_abbr'] or '',
+            'position': sub['position'] or '',
+            'height': sub['height'] or '',
+            'weight': sub['weight'] or '',
+            'honors': sub['honors'] or '',
+            'actionDescription': sub['action_description'] or '',
+            'profileImage': '',
+            'actionGif': '',
+        }
+        players.append(new_player)
+
+        with open(players_path, 'w', encoding='utf-8') as f:
+            json.dump(players, f, indent=2, ensure_ascii=False)
+
+        return jsonify({'success': True, 'message': f'已添加球员 {sub["name"]}', 'player': new_player})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/player-submissions/<int:sub_id>/reject', methods=['POST'])
+def admin_reject_player(sub_id):
+    """管理员拒绝"""
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    reject_player_submission(sub_id)
+    return jsonify({'success': True})
+
+@app.route('/api/admin/player-submissions/<int:sub_id>', methods=['DELETE'])
+def admin_delete_submission(sub_id):
+    resp = require_admin()
+    if isinstance(resp, tuple):
+        return resp
+    delete_player_submission(sub_id)
+    return jsonify({'success': True})
 
 if __name__ == '__main__':
     print("=" * 50)

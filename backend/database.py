@@ -121,6 +121,27 @@ def init_db():
         )
     """)
 
+    # 球员提交审核表
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS player_submissions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            name_cn TEXT,
+            nickname TEXT,
+            team TEXT,
+            team_abbr TEXT,
+            position TEXT,
+            height TEXT,
+            weight TEXT,
+            honors TEXT,
+            action_description TEXT,
+            submitted_by INTEGER,
+            status TEXT DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (submitted_by) REFERENCES users (id)
+        )
+    """)
+
     conn.commit()
     conn.close()
     print("数据库初始化完成")
@@ -567,3 +588,60 @@ def delete_upload_by_id(upload_id):
     conn.commit()
     conn.close()
     return file_path
+
+# ── 球员提交审核 ──────────────────────────────────────
+
+def save_player_submission(data, user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO player_submissions (name, name_cn, nickname, team, team_abbr, position,
+            height, weight, honors, action_description, submitted_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        data.get('name'), data.get('nameCn'), data.get('nickname'),
+        data.get('team'), data.get('teamAbbr'), data.get('position'),
+        data.get('height'), data.get('weight'), data.get('honors'),
+        data.get('actionDescription'), user_id
+    ))
+    sub_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return sub_id
+
+def get_all_submissions():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT ps.*, u.username as submitted_by_name
+        FROM player_submissions ps
+        LEFT JOIN users u ON ps.submitted_by = u.id
+        ORDER BY ps.created_at DESC
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+def approve_player_submission(sub_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE player_submissions SET status = 'approved' WHERE id = ?", (sub_id,))
+    conn.commit()
+    cursor.execute("SELECT * FROM player_submissions WHERE id = ?", (sub_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+def reject_player_submission(sub_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE player_submissions SET status = 'rejected' WHERE id = ?", (sub_id,))
+    conn.commit()
+    conn.close()
+
+def delete_player_submission(sub_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM player_submissions WHERE id = ?", (sub_id,))
+    conn.commit()
+    conn.close()

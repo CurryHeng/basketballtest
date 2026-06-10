@@ -1228,6 +1228,43 @@ body {
     color: var(--text-muted);
 }
 
+.admin-badge-pending {
+    background: #f0ad4e;
+    color: white;
+}
+
+.btn-admin-primary {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--primary);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-right: 0.25rem;
+}
+.btn-admin-primary:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-admin-warn {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid #f0ad4e;
+    border-radius: 6px;
+    background: transparent;
+    color: #f0ad4e;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-right: 0.25rem;
+}
+.btn-admin-warn:hover {
+    background: #f0ad4e;
+    color: white;
+}
+
 .btn-admin-danger {
     padding: 0.35rem 0.75rem;
     border: 1px solid #ff4444;

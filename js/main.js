@@ -184,6 +184,7 @@ async function loadAdminData() {
     loadAdminUsers();
     loadAdminUploads();
     loadAdminAnalyzes();
+    loadAdminSubmissions();
 }
 
 async function loadAdminUsers() {
@@ -282,6 +283,71 @@ async function deleteUpload(uploadId) {
     }
 }
 
+async function loadAdminSubmissions() {
+    const tbody = document.getElementById('admin-submissions-tbody');
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center">加载中...</td></tr>';
+    try {
+        const data = await apiFetch('/api/admin/player-submissions');
+        if (!data.success) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#ff4444">加载失败</td></tr>'; return; }
+        if (data.submissions.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-muted)">暂无球员申请</td></tr>';
+            return;
+        }
+        const statusMap = { pending: '待审核', approved: '已通过', rejected: '已拒绝' };
+        const statusClass = { pending: 'admin-badge-pending', approved: 'admin-badge-yes', rejected: 'admin-badge-no' };
+        tbody.innerHTML = data.submissions.map(s => `
+            <tr>
+                <td>${s.id}</td>
+                <td><strong>${s.name}</strong></td>
+                <td>${s.name_cn || '-'}</td>
+                <td>${s.team || '-'}</td>
+                <td>${s.position || '-'}</td>
+                <td>${s.submitted_by_name || '未知'}</td>
+                <td><span class="admin-badge ${statusClass[s.status] || 'admin-badge-pending'}">${statusMap[s.status] || s.status}</span></td>
+                <td>${s.created_at}</td>
+                <td>
+                    ${s.status === 'pending' ? `
+                        <button class="btn-admin-primary" onclick="approveSubmission(${s.id})">通过</button>
+                        <button class="btn-admin-warn" onclick="rejectSubmission(${s.id})">拒绝</button>
+                    ` : ''}
+                    <button class="btn-admin-danger" onclick="deleteSubmission(${s.id})">删除</button>
+                </td>
+            </tr>
+        `).join('');
+    } catch { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#ff4444">请求失败</td></tr>'; }
+}
+
+async function approveSubmission(subId) {
+    if (!confirm('确定通过该球员申请？将添加到球星资料库。')) return;
+    const data = await apiFetch(`/api/admin/player-submissions/${subId}/approve`, { method: 'POST' });
+    if (data.success) {
+        alert('已通过！' + (data.message || ''));
+        loadAdminSubmissions();
+    } else {
+        alert('操作失败：' + (data.error || '未知错误'));
+    }
+}
+
+async function rejectSubmission(subId) {
+    if (!confirm('确定拒绝该球员申请？')) return;
+    const data = await apiFetch(`/api/admin/player-submissions/${subId}/reject`, { method: 'POST' });
+    if (data.success) {
+        loadAdminSubmissions();
+    } else {
+        alert('操作失败：' + (data.error || '未知错误'));
+    }
+}
+
+async function deleteSubmission(subId) {
+    if (!confirm('确定删除该提交记录？')) return;
+    const data = await apiFetch(`/api/admin/player-submissions/${subId}`, { method: 'DELETE' });
+    if (data.success) {
+        loadAdminSubmissions();
+    } else {
+        alert('删除失败：' + (data.error || '未知错误'));
+    }
+}
+
 async function setAdmin(userId) {
     if (!confirm('确定将该用户设为管理员？')) return;
     const data = await apiFetch(`/api/admin/user/${userId}/set-admin`, {
@@ -324,6 +390,9 @@ window.deleteUser = deleteUser;
 window.deleteAnalyze = deleteAnalyze;
 window.approveUpload = approveUpload;
 window.deleteUpload = deleteUpload;
+window.approveSubmission = approveSubmission;
+window.rejectSubmission = rejectSubmission;
+window.deleteSubmission = deleteSubmission;
 
 navBtns.forEach(btn => {
     btn.addEventListener('click', () => {
